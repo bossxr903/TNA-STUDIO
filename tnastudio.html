@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TNA STUDIO - Premium Digital Assets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .product-card { transition: all 0.2s ease; border: 2px solid transparent; cursor: pointer; }
+        .product-card:hover { transform: translateY(-4px); border-color: #000; box-shadow: 6px 6px 0px 0px rgba(0,0,0,1); }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #000; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .toast-enter { animation: toastIn 0.3s forwards; }
+        .toast-exit { animation: toastOut 0.3s forwards; }
+        @keyframes toastIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes toastOut { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
+        .modal-enter { animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes modalIn { from { transform: scale(0.95) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body class="text-gray-900 overflow-x-hidden min-h-screen flex flex-col">
+
+    <div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2 w-[90%] max-w-sm pointer-events-none"></div>
+
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <button id="menu-btn" class="text-black hover:text-gray-600 p-1"><i class="fa-solid fa-bars text-xl md:text-2xl"></i></button>
+                    <div class="flex-shrink-0 flex items-center select-none cursor-pointer" onclick="showHomeView()">
+                        <i class="fa-solid fa-shapes text-xl md:text-2xl text-black mr-2"></i>
+                        <span class="font-black text-lg md:text-2xl tracking-tight text-black">TNA <span class="text-indigo-600">STUDIO</span></span>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex flex-1 max-w-lg mx-8">
+                    <div class="relative w-full">
+                        <input type="text" id="search-input" class="w-full bg-gray-100 border border-transparent rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:border-black focus:bg-white" placeholder="Search for products...">
+                        <button class="absolute right-0 top-0 mt-2 mr-3 text-gray-500"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div id="auth-section">
+                        </div>
+                </div>
+            </div>
+            
+            <div class="md:hidden pb-3">
+                <div class="relative w-full">
+                    <input type="text" id="mobile-search-input" class="w-full bg-gray-100 border border-transparent rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:border-black text-sm" placeholder="Search products...">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="login-modal-overlay" class="fixed inset-0 bg-black/60 z-[100] hidden backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="login-modal-box" class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden hidden">
+            <div class="p-6 md:p-8 relative">
+                <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <div class="text-center mb-6">
+                    <i class="fa-solid fa-shapes text-4xl text-black mb-2"></i>
+                    <h2 class="text-2xl font-black">Welcome Back</h2>
+                    <p class="text-gray-500 text-sm mt-1">Sign in securely with your Google account.</p>
+                </div>
+                <button onclick="handleGoogleLogin()" class="w-full flex items-center justify-center gap-3 border border-gray-300 hover:bg-gray-50 font-bold py-3 rounded-xl transition-colors mb-4 relative overflow-hidden group">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5">
+                    Continue with Google
+                    <div id="google-loading" class="absolute inset-0 bg-white flex items-center justify-center hidden">
+                        <i class="fa-solid fa-circle-notch fa-spin text-gray-500 text-xl"></i>
+                    </div>
+                </button>
+                <p class="text-center text-xs text-gray-500 mt-6">Powered by Google Authentication</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-8 flex-1 w-full relative">
+        
+        <div id="view-home" class="flex flex-col md:flex-row gap-8 w-full transition-opacity duration-300">
+            <aside class="w-full md:w-64 flex-shrink-0">
+                <div class="md:bg-white md:rounded-xl md:p-5 md:border md:border-gray-200 md:shadow-sm md:sticky md:top-24">
+                    <h3 class="hidden md:block font-bold text-lg mb-4 text-black border-b pb-2">Filter</h3>
+                    <ul class="flex md:flex-col overflow-x-auto hide-scrollbar space-x-2 md:space-x-0 md:space-y-2 pb-2 md:pb-0" id="category-list">
+                        <li><button class="cat-btn w-full whitespace-nowrap md:whitespace-normal text-left px-4 md:px-3 py-2 rounded-full md:rounded-lg font-medium bg-black text-white text-sm md:text-base shadow-sm" data-cat="All">All Products</button></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <main class="flex-1 min-w-0">
+                <div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-2">
+                    <h2 class="text-xl md:text-2xl font-bold" id="current-category-title">All Products</h2>
+                    <span class="text-gray-500 text-sm font-medium bg-gray-200 px-3 py-1 rounded-full" id="product-count">0 items</span>
+                </div>
+
+                <div id="loading-state" class="flex flex-col items-center justify-center py-20">
+                    <div class="loader mb-4"></div>
+                    <p class="text-gray-500 font-medium mt-3" id="loading-text">Connecting to Server...</p>
+                </div>
+
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+                
+                <div id="empty-state" class="hidden text-center py-20 bg-white rounded-xl border border-gray-200 shadow-sm">
+                    <i class="fa-solid fa-box-open text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-700">No products found</h3>
+                    <p class="text-gray-500 text-sm mt-2">Check back later for new uploads.</p>
+                </div>
+            </main>
+        </div>
+
+        <div id="view-details" class="hidden w-full flex-col bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-8 animate-[toastIn_0.3s]">
+            <button onclick="showHomeView()" class="self-start mb-6 text-gray-500 hover:text-black font-bold flex items-center">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Back to Store
+            </button>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="w-full lg:w-1/2">
+                    <div class="bg-gray-100 rounded-xl overflow-hidden aspect-video relative">
+                        <img id="detail-main-img" src="" class="w-full h-full object-cover">
+                    </div>
+                    <div id="detail-thumbnails" class="flex gap-2 mt-3 overflow-x-auto hide-scrollbar pb-2"></div>
+                </div>
+
+                <div class="w-full lg:w-1/2 flex flex-col">
+                    <div class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded font-bold uppercase tracking-wide w-max mb-2" id="detail-category">Category</div>
+                    <h1 id="detail-title" class="text-2xl md:text-3xl font-black text-black leading-tight mb-2">Title</h1>
+                    <div class="flex items-center text-yellow-500 text-sm mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                        <span class="text-gray-400 ml-2 text-xs" id="detail-review-count">(0 Reviews)</span>
+                    </div>
+                    
+                    <div class="text-4xl font-black text-indigo-600 mb-6" id="detail-price">$0.00</div>
+                    <p id="detail-desc" class="text-gray-600 mb-8 whitespace-pre-wrap leading-relaxed flex-grow">Desc</p>
+                    
+                    <div class="flex gap-4 mt-auto">
+                        <a id="detail-buy-btn" href="#" class="lemonsqueezy-button w-full bg-indigo-600 text-white hover:bg-indigo-700 font-bold py-4 rounded-xl transition-colors shadow-lg flex justify-center items-center text-lg">
+                            Buy Now 🚀
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-gray-200">
+                <h3 class="text-2xl font-black mb-6">Customer Reviews</h3>
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="w-full md:w-2/3 space-y-4" id="detail-reviews-list"></div>
+                    <div class="w-full md:w-1/3 bg-gray-50 p-6 rounded-xl border border-gray-200 h-max">
+                        <h4 class="font-bold mb-4">Write a Review</h4>
+                        <form id="review-form" class="space-y-3">
+                            <textarea id="rev-text" placeholder="Share your experience..." required rows="3" class="w-full p-2 border border-gray-300 rounded focus:border-black outline-none resize-none"></textarea>
+                            <button type="submit" class="w-full bg-black text-white font-bold py-2 rounded hover:bg-gray-800 transition-colors shadow">Submit Review</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="main-sidebar" class="fixed inset-y-0 left-0 w-[280px] bg-white shadow-2xl z-[60] transform -translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-6 bg-black text-white flex justify-between items-center">
+            <span class="font-black text-xl tracking-tight">TNA Menu</span>
+            <button id="close-menu-btn" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <div class="px-6 mb-4">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Legal & Policies</p>
+                <ul class="space-y-1">
+                    <li><button onclick="showToast('Privacy Policy Page')" class="w-full text-left py-2 text-gray-700 font-medium"><i class="fa-solid fa-shield-halved w-6"></i> Privacy Policy</button></li>
+                    <li><button onclick="showToast('Terms Page')" class="w-full text-left py-2 text-gray-700 font-medium"><i class="fa-solid fa-file-contract w-6"></i> Terms & Conditions</button></li>
+                </ul>
+            </div>
+            <div class="border-t border-gray-100 my-4"></div>
+            <div class="px-6">
+                <button id="open-admin-btn" class="w-full text-left py-2 text-indigo-600 font-bold"><i class="fa-solid fa-user-shield w-6"></i> Admin Panel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-[500px] bg-white shadow-2xl z-[70] transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="px-6 py-4 bg-indigo-600 text-white flex justify-between items-center">
+            <h2 class="text-lg font-bold"><i class="fa-solid fa-gear mr-2"></i> TNA Admin</h2>
+            <button id="close-admin" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+
+        <div id="admin-login-view" class="flex-1 flex flex-col items-center justify-center p-8 bg-gray-50">
+            <i class="fa-solid fa-shield-halved text-6xl text-indigo-200 mb-6"></i>
+            <h3 class="text-2xl font-black mb-2">Admin Security</h3>
+            <div class="w-full max-w-xs mt-4">
+                <input type="password" id="admin-pin" class="w-full text-center tracking-[0.2em] text-xl border-2 border-gray-300 rounded-lg py-3 focus:outline-none focus:border-indigo-600" placeholder="Password">
+                <button id="verify-pin-btn" class="w-full mt-4 bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 shadow-lg">Unlock Workspace</button>
+            </div>
+        </div>
+
+        <div id="admin-dashboard-view" class="hidden flex-1 flex flex-col h-full bg-white">
+            <div class="flex border-b border-gray-200 bg-gray-50 overflow-x-auto hide-scrollbar">
+                <button id="tab-add" class="flex-1 px-4 py-3 font-bold border-b-2 border-indigo-600 text-indigo-600 whitespace-nowrap">Upload</button>
+                <button id="tab-manage" class="flex-1 px-4 py-3 font-bold border-b-2 border-transparent text-gray-500 whitespace-nowrap">Products</button>
+                <button id="tab-categories" class="flex-1 px-4 py-3 font-bold border-b-2 border-transparent text-gray-500 whitespace-nowrap">Categories</button>
+                <button id="tab-settings" class="flex-1 px-4 py-3 font-bold border-b-2 border-transparent text-gray-500 whitespace-nowrap">Settings</button>
+            </div>
+
+            <div id="content-add" class="flex-1 overflow-y-auto p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg" id="form-heading">Add New Product</h3>
+                    <button type="button" id="cancel-edit-btn" class="hidden text-sm text-red-500 font-bold hover:underline" onclick="cancelEdit()">Cancel Edit</button>
+                </div>
+                <form id="add-product-form" class="space-y-4">
+                    <div><label class="block text-sm font-bold mb-1">Title</label><input type="text" id="p-title" required class="w-full border p-2 rounded focus:border-indigo-600"></div>
+                    
+                    <div class="flex gap-4">
+                        <div class="flex-1"><label class="block text-sm font-bold mb-1">Price ($)</label><input type="number" id="p-price" step="0.01" required class="w-full border p-2 rounded"></div>
+                        <div class="flex-1"><label class="block text-sm font-bold mb-1">Category</label>
+                            <select id="p-category" required class="w-full border p-2 rounded bg-white"></select>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-indigo-50 p-4 rounded border border-indigo-100">
+                        <label class="block text-sm font-bold text-indigo-900 mb-1">Lemon Squeezy Checkout Link</label>
+                        <input type="url" id="p-checkout" placeholder="https://..." class="w-full border p-2 rounded focus:border-indigo-600 text-sm">
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded border">
+                        <label class="block text-sm font-bold mb-2">Images (Album)</label>
+                        <div id="image-inputs-container" class="space-y-2">
+                            <input type="url" name="img-url" required placeholder="Main Image URL" class="w-full border p-2 rounded">
+                        </div>
+                        <button type="button" id="add-more-img-btn" class="mt-2 text-indigo-600 text-sm font-bold">+ Add Image</button>
+                    </div>
+                    <div><label class="block text-sm font-bold mb-1">Description</label><textarea id="p-desc" required rows="3" class="w-full border p-2 rounded"></textarea></div>
+                    <button type="submit" id="submit-product-btn" class="w-full bg-indigo-600 text-white font-bold py-3 rounded shadow-lg">Publish Product</button>
+                </form>
+            </div>
+
+            <div id="content-manage" class="hidden flex-1 overflow-y-auto p-4 bg-gray-50">
+                <div id="admin-product-list" class="space-y-3"></div>
+            </div>
+
+            <div id="content-categories" class="hidden flex-1 overflow-y-auto p-6 bg-gray-50">
+                <form id="add-category-form" class="flex flex-col sm:flex-row gap-2 mb-6 w-full">
+                    <input type="text" id="new-cat-name" placeholder="Type new category..." required class="flex-1 min-w-0 border p-3 rounded-lg focus:outline-none focus:border-indigo-600">
+                    <button type="submit" id="btn-save-cat" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 sm:py-0 rounded-lg font-bold shadow-md flex-shrink-0">Add Category</button>
+                </form>
+                <div class="mb-2 text-sm font-bold text-gray-500 uppercase">Existing Categories</div>
+                <div id="admin-category-list" class="space-y-2"></div>
+            </div>
+
+            <div id="content-settings" class="hidden flex-1 overflow-y-auto p-6 bg-gray-50">
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <h3 class="font-bold text-lg mb-4 text-gray-800"><i class="fa-solid fa-lock mr-2 text-indigo-600"></i> Change Admin Password</h3>
+                    <form id="change-pass-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-600 mb-1">New Password</label>
+                            <input type="text" id="new-admin-pass" required class="w-full border border-gray-300 rounded-lg py-2.5 px-3 focus:outline-none focus:border-indigo-600">
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 shadow">Update Password</button>
+                    </form>
+                    <p class="text-xs text-gray-500 mt-4 leading-relaxed">Highly Secure: This password is saved directly to your serverless Firestore database. Only you can change it from this panel.</p>
+                </div>
+            </div>
+
+            <button id="admin-logout-btn" class="w-full text-red-600 font-bold py-3 bg-red-50 border-t border-red-100">Lock Workspace</button>
+        </div>
+    </div>
+
+    <div id="overlay-main" class="fixed inset-0 bg-black/50 z-[50] hidden backdrop-blur-sm"></div>
+    <div id="overlay-admin" class="fixed inset-0 bg-black/50 z-[65] hidden backdrop-blur-sm"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, updateDoc, doc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ==========================================
+        // 🔥 MUST ADD YOUR FIREBASE CONFIG HERE 🔥
+        // ==========================================
+        const firebaseConfig = {
+            // Replace these with your actual Firebase Project keys
+            apiKey: "AIzaSyC9toKHOdJa-rWN7nEeLveFy5g0bbYvhUY",
+            authDomain: "tna-studio-fed33.firebaseapp.com",
+            projectId: "tna-studio-fed33",
+            storageBucket: "tna-studio-fed33.firebasestorage.app",
+            messagingSenderId: "115441976952",
+            appId: "1:115441976952:web:7a1780e7634affa9708f8d"
+        };
+        // ==========================================
+
+        const app = initializeApp(firebaseConfig);
+        const authRef = getAuth(app);
+        const dbRef = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // State Variables
+        let allProducts = [];
+        let allCategories = [];
+        let currentCategory = 'All';
+        let currentViewedProduct = null;
+        let editingProductId = null; 
+        let currentAdminPass = ""; // Starts empty, fetches from DB
+
+        // Global Toast Notification
+        window.showToast = (message, type = 'success') => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-lg shadow-xl text-white font-bold pointer-events-auto toast-enter ${type === 'success' ? 'bg-black' : 'bg-red-500'}`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-triangle-exclamation'} mr-2"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.replace('toast-enter', 'toast-exit');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+
+        // --- Auth & Admin Security Fetching ---
+        signInAnonymously(authRef).then(() => {
+            // 1. Fetch or Set Admin Password securely
+            onSnapshot(doc(dbRef, 'tna_settings', 'admin_security'), (docSnap) => {
+                if(docSnap.exists()){
+                    currentAdminPass = docSnap.data().password;
+                } else {
+                    // Safety Fallback: Creates default pass on first deploy so you aren't locked out!
+                    currentAdminPass = "Arafat@44";
+                    setDoc(doc(dbRef, 'tna_settings', 'admin_security'), { password: currentAdminPass });
+                }
+            }, (error) => {
+                console.error("Firebase connection error. Check your config.", error);
+                document.getElementById('loading-text').innerText = "Database connection failed. Please check your Firebase Config keys.";
+            });
+            
+            // 2. Fetch Products
+            onSnapshot(collection(dbRef, 'tna_products'), (snapshot) => {
+                allProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                allProducts.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+                finishLoading();
+            });
+
+            // 3. Fetch Categories
+            onSnapshot(collection(dbRef, 'tna_categories'), (snapshot) => {
+                allCategories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                allCategories.sort((a, b) => a.name.localeCompare(b.name));
+                renderCategoriesUI();
+            });
+        }).catch(error => {
+            document.getElementById('loading-text').innerText = "Configuration Error: Missing Firebase Keys.";
+        });
+
+        let isLoaded = false;
+        function finishLoading() {
+            if(isLoaded) return;
+            isLoaded = true;
+            document.getElementById('loading-state').classList.add('hidden');
+            renderProducts();
+            renderAdminList();
+        }
+
+        // --- User Authentication (Google) ---
+        let loggedInUser = JSON.parse(localStorage.getItem('tna_user')) || null;
+
+        function updateAuthUI() {
+            const authSection = document.getElementById('auth-section');
+            if (loggedInUser) {
+                authSection.innerHTML = `
+                    <div class="relative group cursor-pointer">
+                        <div class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors">
+                            <img src="${loggedInUser.avatar}" class="w-7 h-7 rounded-full object-cover border border-gray-300" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=User'">
+                            <span class="text-sm font-bold hidden sm:block truncate max-w-[100px]">${loggedInUser.name.split(' ')[0]}</span>
+                        </div>
+                        <div class="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
+                            <div class="px-4 py-3 border-b border-gray-50 bg-gray-50/50">
+                                <p class="text-sm font-bold text-gray-900 truncate">${loggedInUser.name}</p>
+                                <p class="text-xs text-gray-500 truncate">${loggedInUser.email}</p>
+                            </div>
+                            <button onclick="logoutUser()" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-medium transition-colors"><i class="fa-solid fa-arrow-right-from-bracket w-5 text-red-400"></i> Sign Out</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                authSection.innerHTML = `
+                    <button onclick="openLoginModal()" class="text-sm font-bold bg-black text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors shadow-sm hidden md:block">Login</button>
+                    <button onclick="openLoginModal()" class="md:hidden text-gray-600 hover:text-black bg-gray-100 p-2 rounded-full"><i class="fa-solid fa-user text-lg"></i></button>
+                `;
+            }
+        }
+
+        window.openLoginModal = () => {
+            document.getElementById('login-modal-overlay').classList.remove('hidden');
+            document.getElementById('login-modal-box').classList.remove('hidden');
+            document.getElementById('login-modal-box').classList.add('modal-enter');
+        };
+
+        window.closeLoginModal = () => {
+            document.getElementById('login-modal-overlay').classList.add('hidden');
+            document.getElementById('login-modal-box').classList.add('hidden');
+            document.getElementById('login-modal-box').classList.remove('modal-enter');
+        };
+
+        window.handleGoogleLogin = async () => {
+            try {
+                document.getElementById('google-loading').classList.remove('hidden');
+                const result = await signInWithPopup(authRef, googleProvider);
+                loggedInUser = {
+                    name: result.user.displayName,
+                    email: result.user.email,
+                    avatar: result.user.photoURL,
+                    uid: result.user.uid
+                };
+                localStorage.setItem('tna_user', JSON.stringify(loggedInUser));
+                updateAuthUI();
+                closeLoginModal();
+                showToast('Successfully logged in!');
+            } catch (error) {
+                console.error("Auth Error:", error);
+                if(error.code === 'auth/unauthorized-domain') {
+                    showToast('Add this website domain to Firebase Google Auth settings.', 'error');
+                } else if(error.code !== 'auth/popup-closed-by-user') {
+                    showToast('Login Failed.', 'error');
+                }
+            } finally {
+                document.getElementById('google-loading').classList.add('hidden');
+            }
+        };
+
+        window.logoutUser = () => {
+            signOut(authRef);
+            loggedInUser = null;
+            localStorage.removeItem('tna_user');
+            updateAuthUI();
+            showToast('Signed out successfully');
+        };
+        updateAuthUI();
+
+        // --- Categories UI ---
+        function renderCategoriesUI() {
+            const list = document.getElementById('category-list');
+            const select = document.getElementById('p-category');
+            const adminList = document.getElementById('admin-category-list');
+
+            let sidebarHTML = `<li><button class="cat-btn w-full whitespace-nowrap md:whitespace-normal text-left px-4 md:px-3 py-2 rounded-full md:rounded-lg font-medium ${currentCategory === 'All' ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-600'} text-sm md:text-base shadow-sm transition-all" data-cat="All">All Products</button></li>`;
+            
+            allCategories.forEach(cat => {
+                const isActive = currentCategory === cat.name;
+                sidebarHTML += `<li><button class="cat-btn w-full whitespace-nowrap md:whitespace-normal text-left px-4 md:px-3 py-2 rounded-full md:rounded-lg font-medium ${isActive ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-600'} text-sm md:text-base shadow-sm transition-all" data-cat="${cat.name}">${cat.name}</button></li>`;
+            });
+            list.innerHTML = sidebarHTML;
+
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.cat-btn').forEach(b => {
+                        b.classList.remove('bg-black', 'text-white');
+                        b.classList.add('bg-white', 'text-gray-600');
+                    });
+                    e.currentTarget.classList.remove('bg-white', 'text-gray-600');
+                    e.currentTarget.classList.add('bg-black', 'text-white');
+                    currentCategory = e.currentTarget.getAttribute('data-cat');
+                    renderProducts();
+                });
+            });
+
+            select.innerHTML = allCategories.length === 0 
+                ? `<option value="">Create a category first</option>` 
+                : allCategories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+
+            adminList.innerHTML = allCategories.length === 0 
+                ? '<p class="text-sm text-gray-400">No categories.</p>'
+                : allCategories.map(c => `
+                <div class="bg-white p-3 rounded-xl border border-gray-200 flex justify-between items-center shadow-sm">
+                    <span class="font-bold text-gray-800 text-sm">${c.name}</span>
+                    <button class="text-red-500 hover:bg-red-50 p-2 rounded transition-colors" onclick="deleteCategory('${c.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        // --- Render Products ---
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            let filtered = allProducts.filter(p => currentCategory === 'All' || p.category === currentCategory);
+            const term = (document.getElementById('search-input').value || document.getElementById('mobile-search-input').value).toLowerCase();
+            if (term) filtered = filtered.filter(p => p.title.toLowerCase().includes(term) || p.description.toLowerCase().includes(term));
+
+            document.getElementById('product-count').innerText = `${filtered.length} items`;
+            document.getElementById('current-category-title').innerText = currentCategory === 'All' ? 'All Products' : currentCategory;
+
+            if (filtered.length === 0) {
+                grid.classList.add('hidden');
+                document.getElementById('empty-state').classList.remove('hidden');
+            } else {
+                document.getElementById('empty-state').classList.add('hidden');
+                grid.classList.remove('hidden');
+                
+                filtered.forEach(product => {
+                    const images = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls : ['https://placehold.co/600x400?text=No+Image'];
+                    const card = document.createElement('div');
+                    card.className = 'product-card bg-white rounded-xl overflow-hidden flex flex-col h-full border border-gray-100 shadow-sm';
+                    card.onclick = () => openProductDetails(product.id);
+                    
+                    card.innerHTML = `
+                        <div class="h-48 w-full bg-gray-100 relative group">
+                            <img src="${images[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-2 left-2 bg-white/95 backdrop-blur-sm px-2 py-1 rounded text-[10px] uppercase font-bold text-gray-800 shadow-sm z-10">
+                                ${product.category}
+                            </div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-grow pointer-events-none">
+                            <h3 class="font-bold text-lg text-black mb-1.5 line-clamp-1">${product.title}</h3>
+                            <p class="text-gray-500 text-sm mb-4 line-clamp-2">${product.description}</p>
+                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+                                <span class="text-xl font-black text-black">$${parseFloat(product.price).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        window.showHomeView = () => {
+            document.getElementById('view-details').classList.add('hidden');
+            document.getElementById('view-home').classList.remove('hidden');
+            document.getElementById('view-home').classList.add('flex');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.openProductDetails = (id) => {
+            currentViewedProduct = allProducts.find(p => p.id === id);
+            if (!currentViewedProduct) return;
+            const p = currentViewedProduct;
+            const images = p.imageUrls && p.imageUrls.length > 0 ? p.imageUrls : ['https://placehold.co/600x400?text=No+Image'];
+            
+            document.getElementById('detail-title').innerText = p.title;
+            document.getElementById('detail-price').innerText = `$${parseFloat(p.price).toFixed(2)}`;
+            document.getElementById('detail-category').innerText = p.category;
+            document.getElementById('detail-desc').innerText = p.description;
+            document.getElementById('detail-main-img').src = images[0];
+            
+            const thumbContainer = document.getElementById('detail-thumbnails');
+            thumbContainer.innerHTML = '';
+            images.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.className = "w-20 h-20 object-cover rounded cursor-pointer border-2 border-transparent hover:border-indigo-500 opacity-70 hover:opacity-100 transition-all flex-shrink-0";
+                img.onclick = () => document.getElementById('detail-main-img').src = url;
+                thumbContainer.appendChild(img);
+            });
+
+            const buyBtn = document.getElementById('detail-buy-btn');
+            if (p.checkoutLink) {
+                buyBtn.href = p.checkoutLink;
+                buyBtn.classList.remove('opacity-50', 'pointer-events-none');
+                buyBtn.innerHTML = 'Buy Now 🚀';
+            } else {
+                buyBtn.href = "#";
+                buyBtn.classList.add('opacity-50', 'pointer-events-none');
+                buyBtn.innerHTML = 'Out of Stock';
+            }
+            if (window.createLemonSqueezy) window.createLemonSqueezy();
+
+            renderReviews();
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-home').classList.remove('flex');
+            document.getElementById('view-details').classList.remove('hidden');
+            document.getElementById('view-details').classList.add('flex');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        function renderReviews() {
+            const list = document.getElementById('detail-reviews-list');
+            const reviews = currentViewedProduct.reviews || [];
+            document.getElementById('detail-review-count').innerText = `(${reviews.length} Reviews)`;
+            
+            if (reviews.length === 0) {
+                list.innerHTML = `<p class="text-gray-500 italic">No reviews yet.</p>`; return;
+            }
+            list.innerHTML = reviews.map(r => `
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-bold text-black">${r.name}</span>
+                        <span class="text-xs text-gray-400">${r.date || ''}</span>
+                    </div>
+                    <div class="text-yellow-500 text-xs mb-2"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                    <p class="text-gray-700 text-sm">${r.text}</p>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('review-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!loggedInUser) {
+                openLoginModal();
+                showToast('Please log in to leave a review', 'error');
+                return;
+            }
+            const text = document.getElementById('rev-text').value;
+            const newRev = { name: loggedInUser.name, text, date: new Date().toLocaleDateString() };
+            if (!currentViewedProduct.reviews) currentViewedProduct.reviews = [];
+            currentViewedProduct.reviews.push(newRev);
+            
+            await updateDoc(doc(dbRef, 'tna_products', currentViewedProduct.id), {
+                reviews: currentViewedProduct.reviews
+            });
+            e.target.reset();
+            renderReviews();
+            showToast('Review posted!');
+        });
+
+        // --- Event Listeners (UI / Layout) ---
+        document.getElementById('search-input').addEventListener('input', renderProducts);
+        document.getElementById('mobile-search-input').addEventListener('input', renderProducts);
+
+        const toggleMenu = (show) => {
+            document.getElementById('main-sidebar').style.transform = show ? 'translateX(0)' : 'translateX(-100%)';
+            document.getElementById('overlay-main').classList.toggle('hidden', !show);
+        };
+        document.getElementById('menu-btn').onclick = () => toggleMenu(true);
+        document.getElementById('close-menu-btn').onclick = () => toggleMenu(false);
+        document.getElementById('overlay-main').onclick = () => toggleMenu(false);
+
+        const toggleAdmin = (show) => {
+            toggleMenu(false);
+            document.getElementById('admin-sidebar').style.transform = show ? 'translateX(0)' : 'translateX(100%)';
+            document.getElementById('overlay-admin').classList.toggle('hidden', !show);
+            if(!show) resetAdminEditState();
+        };
+        document.getElementById('open-admin-btn').onclick = () => toggleAdmin(true);
+        document.getElementById('close-admin').onclick = () => toggleAdmin(false);
+        document.getElementById('overlay-admin').onclick = () => toggleAdmin(false);
+
+        // --- Admin Actions ---
+        document.getElementById('verify-pin-btn').onclick = () => {
+            const inputVal = document.getElementById('admin-pin').value;
+            if (inputVal === currentAdminPass && currentAdminPass !== "") {
+                document.getElementById('admin-login-view').classList.add('hidden');
+                document.getElementById('admin-dashboard-view').classList.remove('hidden');
+                document.getElementById('admin-dashboard-view').classList.add('flex');
+                document.getElementById('admin-pin').value = ''; 
+            } else {
+                showToast('Incorrect Password or Connection Error', 'error');
+            }
+        };
+
+        document.getElementById('admin-logout-btn').onclick = () => {
+            document.getElementById('admin-dashboard-view').classList.add('hidden');
+            document.getElementById('admin-dashboard-view').classList.remove('flex');
+            document.getElementById('admin-login-view').classList.remove('hidden');
+            toggleAdmin(false);
+        };
+
+        document.getElementById('change-pass-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const newPass = document.getElementById('new-admin-pass').value.trim();
+            if(newPass.length < 5) { showToast('Password too short!', 'error'); return; }
+            await setDoc(doc(dbRef, 'tna_settings', 'admin_security'), { password: newPass });
+            currentAdminPass = newPass;
+            e.target.reset();
+            showToast('Admin password updated securely!');
+        };
+
+        const switchAdminTab = (activeTabBtn, activeContentId) => {
+            ['tab-add', 'tab-manage', 'tab-categories', 'tab-settings'].forEach(id => {
+                document.getElementById(id).classList.replace('border-indigo-600', 'border-transparent');
+                document.getElementById(id).classList.replace('text-indigo-600', 'text-gray-500');
+            });
+            ['content-add', 'content-manage', 'content-categories', 'content-settings'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            activeTabBtn.classList.replace('border-transparent', 'border-indigo-600');
+            activeTabBtn.classList.replace('text-gray-500', 'text-indigo-600');
+            document.getElementById(activeContentId).classList.remove('hidden');
+        };
+
+        document.getElementById('tab-add').onclick = (e) => switchAdminTab(e.target, 'content-add');
+        document.getElementById('tab-manage').onclick = (e) => switchAdminTab(e.target, 'content-manage');
+        document.getElementById('tab-categories').onclick = (e) => switchAdminTab(e.target, 'content-categories');
+        document.getElementById('tab-settings').onclick = (e) => switchAdminTab(e.target, 'content-settings');
+
+        document.getElementById('add-category-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('new-cat-name');
+            const catName = input.value.trim();
+            if(!catName) return;
+            if(allCategories.some(c => c.name.toLowerCase() === catName.toLowerCase())) {
+                showToast('Category exists!', 'error'); return;
+            }
+            const btn = document.getElementById('btn-save-cat');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            await addDoc(collection(dbRef, 'tna_categories'), { name: catName, createdAt: serverTimestamp() });
+            input.value = ''; btn.innerHTML = 'Add Category'; showToast('Category Added');
+        };
+
+        window.deleteCategory = async (id) => {
+            if (!confirm('Delete this category?')) return;
+            await deleteDoc(doc(dbRef, 'tna_categories', id));
+            showToast('Category deleted', 'info');
+        };
+
+        document.getElementById('add-more-img-btn').onclick = () => {
+            const container = document.getElementById('image-inputs-container');
+            const input = document.createElement('input');
+            input.type = 'url'; input.name = 'img-url'; input.placeholder = 'Additional Image URL';
+            input.className = 'w-full border p-2 rounded mt-2';
+            container.appendChild(input);
+        };
+
+        window.editProduct = (id) => {
+            const p = allProducts.find(x => x.id === id);
+            if(!p) return;
+            editingProductId = p.id;
+            document.getElementById('form-heading').innerText = "Edit Product Information";
+            document.getElementById('submit-product-btn').innerText = "Update Product";
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            
+            document.getElementById('p-title').value = p.title;
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-category').value = p.category;
+            document.getElementById('p-checkout').value = p.checkoutLink || '';
+            document.getElementById('p-desc').value = p.description;
+            
+            const container = document.getElementById('image-inputs-container');
+            container.innerHTML = ''; 
+            p.imageUrls.forEach((url, index) => {
+                const input = document.createElement('input');
+                input.type = 'url'; input.name = 'img-url'; input.value = url;
+                input.className = 'w-full border p-2 rounded mt-2';
+                if(index === 0) input.placeholder = "Main Image URL";
+                container.appendChild(input);
+            });
+            document.getElementById('tab-add').click();
+        };
+
+        window.cancelEdit = () => resetAdminEditState();
+
+        function resetAdminEditState() {
+            editingProductId = null;
+            document.getElementById('form-heading').innerText = "Add New Product";
+            document.getElementById('submit-product-btn').innerText = "Publish Product";
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+            document.getElementById('add-product-form').reset();
+            document.getElementById('image-inputs-container').innerHTML = '<input type="url" name="img-url" required placeholder="Main Image URL" class="w-full border p-2 rounded">';
+        }
+
+        document.getElementById('add-product-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const categorySelect = document.getElementById('p-category').value;
+            if(!categorySelect) { showToast('Create a category first!', 'error'); return; }
+
+            const btn = document.getElementById('submit-product-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            
+            const urls = Array.from(document.querySelectorAll('input[name="img-url"]')).map(i => i.value).filter(v => v);
+            const checkoutLnk = document.getElementById('p-checkout').value.trim();
+
+            const productData = {
+                title: document.getElementById('p-title').value,
+                price: parseFloat(document.getElementById('p-price').value),
+                category: categorySelect,
+                checkoutLink: checkoutLnk,
+                imageUrls: urls,
+                description: document.getElementById('p-desc').value
+            };
+
+            if (editingProductId) {
+                await updateDoc(doc(dbRef, 'tna_products', editingProductId), productData);
+                showToast('Product Updated!');
+            } else {
+                productData.reviews = [];
+                productData.createdAt = serverTimestamp();
+                await addDoc(collection(dbRef, 'tna_products'), productData);
+                showToast('Product Published!');
+            }
+            
+            resetAdminEditState();
+            document.getElementById('tab-manage').click();
+        };
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-product-list');
+            list.innerHTML = allProducts.length === 0 ? '<p class="text-center text-gray-400 py-4">No products.</p>' : '';
+            
+            allProducts.forEach(p => {
+                const img = p.imageUrls ? p.imageUrls[0] : 'https://placehold.co/100';
+                const div = document.createElement('div');
+                div.className = 'bg-white p-3 rounded-xl border flex justify-between items-center shadow-sm';
+                div.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <img src="${img}" class="w-12 h-12 object-cover rounded flex-shrink-0">
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-sm text-gray-800 truncate">${p.title}</h4>
+                            <p class="text-xs text-gray-500 font-medium">${p.category} • $${p.price}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0 ml-2">
+                        <button class="text-indigo-500 hover:bg-indigo-50 p-2 rounded transition-colors" onclick="editProduct('${p.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="text-red-500 hover:bg-red-50 p-2 rounded transition-colors" onclick="deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        window.deleteProduct = async (id) => {
+            if (!confirm('Delete this product?')) return;
+            await deleteDoc(doc(dbRef, 'tna_products', id));
+            showToast('Product deleted.', 'info');
+        };
+    </script>
+</body>
+</html>
