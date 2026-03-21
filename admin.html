@@ -30,32 +30,31 @@
         </a>
     </div>
 
-    <!-- ADMIN LOGIN VIEW -->
+    <!-- SECURE ADMIN LOGIN VIEW -->
     <div id="admin-login-view" class="flex-1 flex flex-col items-center justify-center p-8 bg-gray-50 z-20 absolute inset-0 top-[60px]">
-        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center border border-gray-100">
-            <i class="fa-solid fa-shield-halved text-6xl text-indigo-500 mb-6"></i>
-            <h3 class="text-2xl font-black mb-2 text-gray-800">Admin Security</h3>
-            <p class="text-sm text-gray-500 mb-6">Enter your master password to access the dashboard.</p>
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center border border-gray-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 to-indigo-600"></div>
+            <i class="fa-solid fa-user-shield text-6xl text-indigo-500 mb-6"></i>
+            <h3 class="text-2xl font-black mb-2 text-gray-800">Admin Authorization</h3>
+            <p class="text-sm text-gray-500 mb-8">This workspace is restricted. Please sign in with your authorized master account.</p>
             
-            <input type="password" id="admin-pin" class="w-full text-center tracking-[0.2em] text-xl border-2 border-gray-200 rounded-xl py-4 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all" placeholder="Password">
-            <button id="verify-pin-btn" class="w-full mt-4 bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 shadow-lg transition-colors flex justify-center items-center">
-                <span>Unlock Workspace</span>
-                <i class="fa-solid fa-arrow-right ml-2"></i>
+            <button id="admin-login-btn" class="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 shadow-lg transition-colors flex justify-center items-center gap-3">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5">
+                <span>Sign in as Admin</span>
             </button>
-            <div id="login-loading" class="mt-4 text-gray-400 text-sm hidden"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Connecting to Database...</div>
+            <div id="login-loading" class="mt-4 text-indigo-600 font-bold text-sm hidden"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Verifying Identity...</div>
         </div>
     </div>
 
     <!-- ADMIN DASHBOARD VIEW -->
     <div id="admin-dashboard-view" class="hidden flex-1 flex flex-col bg-white overflow-hidden relative">
         
-        <!-- Tabs (Added Links Tab) -->
+        <!-- Tabs -->
         <div class="flex border-b border-gray-200 bg-white overflow-x-auto hide-scrollbar shadow-sm z-10">
             <button id="tab-add" class="px-4 py-4 font-bold border-b-[3px] border-indigo-600 text-indigo-600 whitespace-nowrap transition-colors"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>Upload</button>
             <button id="tab-manage" class="px-4 py-4 font-bold border-b-[3px] border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap transition-colors"><i class="fa-solid fa-box mr-2"></i>Products</button>
             <button id="tab-categories" class="px-4 py-4 font-bold border-b-[3px] border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap transition-colors"><i class="fa-solid fa-tags mr-2"></i>Categories</button>
             <button id="tab-links" class="px-4 py-4 font-bold border-b-[3px] border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap transition-colors"><i class="fa-solid fa-link mr-2"></i>Menu Links</button>
-            <button id="tab-settings" class="px-4 py-4 font-bold border-b-[3px] border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap transition-colors"><i class="fa-solid fa-sliders mr-2"></i>Settings</button>
         </div>
 
         <div class="flex-1 overflow-hidden relative bg-gray-50/50">
@@ -87,7 +86,6 @@
                         <div class="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100">
                             <label class="block text-sm font-bold text-indigo-900 mb-1.5"><i class="fa-solid fa-link text-indigo-500 mr-1"></i> Lemon Squeezy Checkout Link</label>
                             <input type="url" id="p-checkout" placeholder="https://..." class="w-full border border-indigo-200 p-3 rounded-xl focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 text-sm bg-white transition-all">
-                            <p class="text-xs text-indigo-400 mt-2 font-medium">Leave empty if out of stock or link is not ready yet.</p>
                         </div>
 
                         <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
@@ -122,12 +120,10 @@
                     <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
                         <h3 class="font-black text-lg text-gray-800 mb-4">Create New Category</h3>
                         <form id="add-category-form" class="flex flex-col sm:flex-row gap-3">
-                            <input type="text" id="new-cat-name" placeholder="E.g. E-Books, Templates..." required class="flex-1 border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all">
-                            <button type="submit" id="btn-save-cat" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-xl font-bold shadow-md transition-colors whitespace-nowrap">Add Category</button>
+                            <input type="text" id="new-cat-name" placeholder="E.g. E-Books, Templates..." required class="flex-1 border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:border-indigo-600 transition-all">
+                            <button type="submit" id="btn-save-cat" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-xl font-bold shadow-md transition-colors">Add</button>
                         </form>
                     </div>
-                    
-                    <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 ml-1">Existing Categories</h4>
                     <div id="admin-category-list" class="space-y-3"></div>
                 </div>
             </div>
@@ -140,60 +136,28 @@
                         <form id="add-link-form" class="space-y-4">
                             <div class="flex flex-col sm:flex-row gap-3">
                                 <div class="flex-1">
-                                    <label class="block text-xs font-bold text-gray-500 mb-1">Link Title</label>
-                                    <input type="text" id="link-title" placeholder="e.g. Privacy Policy" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600 transition-all">
+                                    <input type="text" id="link-title" placeholder="Link Title (e.g. Privacy)" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600">
                                 </div>
                                 <div class="flex-1">
-                                    <label class="block text-xs font-bold text-gray-500 mb-1">URL / Link</label>
-                                    <input type="text" id="link-url" placeholder="e.g. privacy.html" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600 transition-all">
+                                    <input type="text" id="link-url" placeholder="URL (e.g. privacy.html)" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600">
                                 </div>
                             </div>
-                            <div class="flex flex-col sm:flex-row gap-3 items-end">
-                                <div class="flex-1 w-full">
-                                    <label class="block text-xs font-bold text-gray-500 mb-1">FontAwesome Icon Class (Optional)</label>
-                                    <input type="text" id="link-icon" placeholder="e.g. fa-shield-halved" value="fa-link" class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600 transition-all font-mono text-sm">
-                                </div>
-                                <button type="submit" id="btn-save-link" class="w-full sm:w-auto bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-bold shadow-md transition-colors whitespace-nowrap">Add to Menu</button>
-                            </div>
+                            <button type="submit" id="btn-save-link" class="w-full bg-black hover:bg-gray-800 text-white py-3 rounded-xl font-bold shadow-md">Add to Menu</button>
                         </form>
                     </div>
-                    
-                    <h4 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 ml-1">Current Menu Links</h4>
                     <div id="admin-links-list" class="space-y-3"></div>
                 </div>
             </div>
-
-            <!-- CONTENT: SETTINGS / PASSWORD -->
-            <div id="content-settings" class="hidden absolute inset-0 overflow-y-auto p-4 md:p-8">
-                <div class="max-w-xl mx-auto">
-                    <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                        <h3 class="font-black text-xl mb-6 text-gray-800 flex items-center"><i class="fa-solid fa-lock mr-3 text-indigo-500"></i> Security Settings</h3>
-                        <form id="change-pass-form" class="space-y-5">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">New Admin Password</label>
-                                <input type="text" id="new-admin-pass" required placeholder="Enter new strong password" class="w-full border border-gray-300 rounded-xl p-3.5 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all font-mono">
-                            </div>
-                            <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl hover:bg-indigo-700 shadow-md transition-colors">Update Password</button>
-                        </form>
-                        <div class="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                            <p class="text-xs text-gray-500 leading-relaxed font-medium"><i class="fa-solid fa-circle-info text-gray-400 mr-1"></i> Highly Secure: This password is saved directly to your Serverless Firestore database. It is not visible in the source code.</p>
-                        </div>
-                    </div>
-                    
-                    <button id="admin-logout-btn" class="w-full mt-6 text-red-600 font-bold py-4 bg-red-50 border border-red-100 rounded-2xl hover:bg-red-100 transition-colors flex justify-center items-center">
-                        <i class="fa-solid fa-lock mr-2"></i> Lock Workspace
-                    </button>
-                </div>
-            </div>
+            
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, updateDoc, doc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Apnar Original Firebase Config
+        // Apnar Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyC9toKHOdJa-rWN7nEeLveFy5g0bbYvhUY",
             authDomain: "tna-studio-fed33.firebaseapp.com",
@@ -206,12 +170,15 @@
         const app = initializeApp(firebaseConfig);
         const authRef = getAuth(app);
         const dbRef = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        const MASTER_ADMIN_EMAIL = "trxrahman158@gmail.com";
 
         let allProducts = [];
         let allCategories = [];
         let allLinks = [];
-        let currentAdminPass = "";
         let editingProductId = null;
+        let unsubscribeProducts, unsubscribeCategories, unsubscribeLinks;
 
         window.showToast = (message, type = 'success') => {
             const container = document.getElementById('toast-container');
@@ -225,72 +192,82 @@
             }, 3000);
         };
 
+        // --- AUTHENTICATION LOGIC ---
+        const loginBtn = document.getElementById('admin-login-btn');
         const loginLoading = document.getElementById('login-loading');
-        loginLoading.classList.remove('hidden');
 
-        // Fetch Admin Data
-        signInAnonymously(authRef).then(() => {
-            onSnapshot(doc(dbRef, 'tna_settings', 'admin_security'), (docSnap) => {
+        loginBtn.onclick = async () => {
+            try {
+                loginBtn.classList.add('hidden');
+                loginLoading.classList.remove('hidden');
+                await signInWithPopup(authRef, googleProvider);
+            } catch (error) {
+                loginBtn.classList.remove('hidden');
                 loginLoading.classList.add('hidden');
-                if(docSnap.exists()){
-                    currentAdminPass = docSnap.data().password;
+                showToast('Login Failed or Cancelled', 'error');
+            }
+        };
+
+        onAuthStateChanged(authRef, (user) => {
+            if (user) {
+                if (user.email === MASTER_ADMIN_EMAIL) {
+                    // Admin Logged in successfully
+                    document.getElementById('admin-login-view').classList.add('hidden');
+                    document.getElementById('admin-dashboard-view').classList.remove('hidden');
+                    document.getElementById('admin-dashboard-view').classList.add('flex');
+                    showToast('Welcome back, Admin!');
+                    loadAdminData(); // Load data only when auth is confirmed
                 } else {
-                    currentAdminPass = "";
-                    setDoc(doc(dbRef, 'tna_settings', 'admin_security'), { password: currentAdminPass });
+                    // Not the admin
+                    signOut(authRef);
+                    loginBtn.classList.remove('hidden');
+                    loginLoading.classList.add('hidden');
+                    showToast('Access Denied. You are not the Admin.', 'error');
                 }
-            });
-            
-            onSnapshot(collection(dbRef, 'tna_products'), (snapshot) => {
+            } else {
+                // Logged out state
+                document.getElementById('admin-dashboard-view').classList.add('hidden');
+                document.getElementById('admin-dashboard-view').classList.remove('flex');
+                document.getElementById('admin-login-view').classList.remove('hidden');
+                loginBtn.classList.remove('hidden');
+                loginLoading.classList.add('hidden');
+                
+                // Cleanup listeners
+                if(unsubscribeProducts) unsubscribeProducts();
+                if(unsubscribeCategories) unsubscribeCategories();
+                if(unsubscribeLinks) unsubscribeLinks();
+            }
+        });
+
+        // Load data only if user is authorized Admin
+        function loadAdminData() {
+            unsubscribeProducts = onSnapshot(collection(dbRef, 'tna_products'), (snapshot) => {
                 allProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 allProducts.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
                 renderAdminList();
             });
 
-            onSnapshot(collection(dbRef, 'tna_categories'), (snapshot) => {
+            unsubscribeCategories = onSnapshot(collection(dbRef, 'tna_categories'), (snapshot) => {
                 allCategories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 allCategories.sort((a, b) => a.name.localeCompare(b.name));
                 renderCategoryDropdown();
                 renderCategoryList();
             });
 
-            onSnapshot(collection(dbRef, 'tna_links'), (snapshot) => {
+            unsubscribeLinks = onSnapshot(collection(dbRef, 'tna_links'), (snapshot) => {
                 allLinks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 allLinks.sort((a, b) => (a.createdAt?.toMillis() || 0) - (b.createdAt?.toMillis() || 0));
                 renderLinksList();
             });
-        }).catch(() => {
-            loginLoading.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-500 mr-2"></i> Connection Error';
-        });
+        }
 
-        // Login Logic
-        document.getElementById('verify-pin-btn').onclick = () => {
-            const inputVal = document.getElementById('admin-pin').value;
-            if (inputVal === currentAdminPass && currentAdminPass !== "") {
-                document.getElementById('admin-login-view').classList.add('hidden');
-                document.getElementById('admin-dashboard-view').classList.remove('hidden');
-                document.getElementById('admin-dashboard-view').classList.add('flex');
-                document.getElementById('admin-pin').value = ''; 
-                showToast('Access Granted');
-            } else {
-                showToast('Incorrect Password', 'error');
-            }
-        };
-
-        document.getElementById('admin-logout-btn').onclick = () => {
-            document.getElementById('admin-dashboard-view').classList.add('hidden');
-            document.getElementById('admin-dashboard-view').classList.remove('flex');
-            document.getElementById('admin-login-view').classList.remove('hidden');
-            resetAdminEditState();
-            showToast('Workspace Locked');
-        };
-
-        // Tabs Logic (Now 5 Tabs)
+        // Tabs Logic
         const switchAdminTab = (activeTabBtn, activeContentId) => {
-            ['tab-add', 'tab-manage', 'tab-categories', 'tab-links', 'tab-settings'].forEach(id => {
+            ['tab-add', 'tab-manage', 'tab-categories', 'tab-links'].forEach(id => {
                 document.getElementById(id).classList.replace('border-indigo-600', 'border-transparent');
                 document.getElementById(id).classList.replace('text-indigo-600', 'text-gray-500');
             });
-            ['content-add', 'content-manage', 'content-categories', 'content-links', 'content-settings'].forEach(id => {
+            ['content-add', 'content-manage', 'content-categories', 'content-links'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
             activeTabBtn.classList.replace('border-transparent', 'border-indigo-600');
@@ -302,101 +279,77 @@
         document.getElementById('tab-manage').onclick = (e) => switchAdminTab(e.currentTarget, 'content-manage');
         document.getElementById('tab-categories').onclick = (e) => switchAdminTab(e.currentTarget, 'content-categories');
         document.getElementById('tab-links').onclick = (e) => switchAdminTab(e.currentTarget, 'content-links');
-        document.getElementById('tab-settings').onclick = (e) => switchAdminTab(e.currentTarget, 'content-settings');
 
-        // Update Password
-        document.getElementById('change-pass-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const newPass = document.getElementById('new-admin-pass').value.trim();
-            if(newPass.length < 5) { showToast('Password too short!', 'error'); return; }
-            await setDoc(doc(dbRef, 'tna_settings', 'admin_security'), { password: newPass });
-            currentAdminPass = newPass;
-            e.target.reset();
-            showToast('Admin password updated securely!');
-        };
-
-        // Dynamic Links Management
+        // Dynamic Links
         document.getElementById('add-link-form').onsubmit = async (e) => {
             e.preventDefault();
             const title = document.getElementById('link-title').value.trim();
             const url = document.getElementById('link-url').value.trim();
-            let icon = document.getElementById('link-icon').value.trim() || 'fa-link';
-            
-            if(!title || !url) return;
             const btn = document.getElementById('btn-save-link');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             
-            await addDoc(collection(dbRef, 'tna_links'), { title, url, icon, createdAt: serverTimestamp() });
-            e.target.reset(); 
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            try {
+                await addDoc(collection(dbRef, 'tna_links'), { title, url, icon: 'fa-link', createdAt: serverTimestamp() });
+                e.target.reset(); 
+                showToast('Link added to Menu');
+            } catch(error) {
+                showToast('Permission Denied', 'error');
+            }
             btn.innerHTML = 'Add to Menu'; 
-            showToast('Link added to Website Menu');
         };
 
         function renderLinksList() {
             const list = document.getElementById('admin-links-list');
-            list.innerHTML = allLinks.length === 0 
-                ? '<p class="text-sm text-gray-400 italic">No links added to the menu yet.</p>'
-                : allLinks.map(l => `
+            list.innerHTML = allLinks.map(l => `
                 <div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center shadow-sm">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid ${l.icon} text-gray-400 w-5"></i>
-                        <div>
-                            <span class="font-bold text-gray-800 block leading-tight">${l.title}</span>
-                            <span class="text-xs text-indigo-500 font-mono">${l.url}</span>
-                        </div>
-                    </div>
-                    <button class="text-red-500 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors" onclick="deleteLink('${l.id}')"><i class="fa-solid fa-trash"></i></button>
+                    <div><span class="font-bold text-gray-800">${l.title}</span><br><span class="text-xs text-indigo-500">${l.url}</span></div>
+                    <button class="text-red-500 hover:bg-red-50 px-3 py-2 rounded-lg" onclick="deleteLink('${l.id}')"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
         }
 
         window.deleteLink = async (id) => {
-            if (!confirm('Remove this link from your website menu?')) return;
-            await deleteDoc(doc(dbRef, 'tna_links', id));
-            showToast('Link removed', 'info');
+            if (confirm('Remove this link?')) {
+                try { await deleteDoc(doc(dbRef, 'tna_links', id)); showToast('Link removed'); }
+                catch(e) { showToast('Permission Denied', 'error'); }
+            }
         };
 
-        // Categories Management
+        // Categories
         function renderCategoryDropdown() {
-            const select = document.getElementById('p-category');
-            select.innerHTML = allCategories.length === 0 
+            document.getElementById('p-category').innerHTML = allCategories.length === 0 
                 ? `<option value="">Create a category first</option>` 
                 : allCategories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
         }
 
         function renderCategoryList() {
-            const list = document.getElementById('admin-category-list');
-            list.innerHTML = allCategories.length === 0 
-                ? '<p class="text-sm text-gray-400 italic">No categories created yet.</p>'
-                : allCategories.map(c => `
+            document.getElementById('admin-category-list').innerHTML = allCategories.map(c => `
                 <div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center shadow-sm">
                     <span class="font-bold text-gray-800">${c.name}</span>
-                    <button class="text-red-500 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors" onclick="deleteCategory('${c.id}')"><i class="fa-solid fa-trash"></i></button>
+                    <button class="text-red-500 hover:bg-red-50 px-3 py-2 rounded-lg" onclick="deleteCategory('${c.id}')"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
         }
 
         document.getElementById('add-category-form').onsubmit = async (e) => {
             e.preventDefault();
-            const input = document.getElementById('new-cat-name');
-            const catName = input.value.trim();
-            if(!catName) return;
-            if(allCategories.some(c => c.name.toLowerCase() === catName.toLowerCase())) {
-                showToast('Category exists!', 'error'); return;
-            }
-            const btn = document.getElementById('btn-save-cat');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-            await addDoc(collection(dbRef, 'tna_categories'), { name: catName, createdAt: serverTimestamp() });
-            input.value = ''; btn.innerHTML = 'Add Category'; showToast('Category Added');
+            const catName = document.getElementById('new-cat-name').value.trim();
+            if(!catName || allCategories.some(c => c.name.toLowerCase() === catName.toLowerCase())) { showToast('Invalid or exists!', 'error'); return; }
+            
+            try {
+                await addDoc(collection(dbRef, 'tna_categories'), { name: catName, createdAt: serverTimestamp() });
+                document.getElementById('new-cat-name').value = ''; showToast('Category Added');
+            } catch(error) { showToast('Permission Denied', 'error'); }
         };
 
         window.deleteCategory = async (id) => {
-            if (!confirm('Delete this category forever?')) return;
-            await deleteDoc(doc(dbRef, 'tna_categories', id));
-            showToast('Category deleted', 'info');
+            if (confirm('Delete this category?')) {
+                try { await deleteDoc(doc(dbRef, 'tna_categories', id)); showToast('Category deleted'); }
+                catch(e) { showToast('Permission Denied', 'error'); }
+            }
         };
 
-        // Product Management
+        // Products
         document.getElementById('add-more-img-btn').onclick = () => {
             const container = document.getElementById('image-inputs-container');
             const input = document.createElement('input');
@@ -425,7 +378,6 @@
                 const input = document.createElement('input');
                 input.type = 'url'; input.name = 'img-url'; input.value = url;
                 input.className = `w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 transition-all text-sm ${index > 0 ? 'mt-3' : ''}`;
-                if(index === 0) input.placeholder = "Main Image URL";
                 container.appendChild(input);
             });
             document.getElementById('tab-add').click();
@@ -436,10 +388,10 @@
         function resetAdminEditState() {
             editingProductId = null;
             document.getElementById('form-heading').innerText = "Publish New Product";
-            document.getElementById('submit-product-btn').innerText = "Publish Product to Store";
+            document.getElementById('submit-product-btn').innerText = "Publish Product";
             document.getElementById('cancel-edit-btn').classList.add('hidden');
             document.getElementById('add-product-form').reset();
-            document.getElementById('image-inputs-container').innerHTML = '<input type="url" name="img-url" required placeholder="Main Image URL (e.g. Imgur link)" class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 transition-all text-sm">';
+            document.getElementById('image-inputs-container').innerHTML = '<input type="url" name="img-url" required placeholder="Main Image URL" class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 transition-all text-sm">';
         }
 
         document.getElementById('add-product-form').onsubmit = async (e) => {
@@ -448,70 +400,60 @@
             if(!categorySelect) { showToast('Create a category first!', 'error'); return; }
 
             const btn = document.getElementById('submit-product-btn');
-            const originalText = btn.innerText;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Processing...';
             
             const urls = Array.from(document.querySelectorAll('input[name="img-url"]')).map(i => i.value).filter(v => v);
-            const checkoutLnk = document.getElementById('p-checkout').value.trim();
-
             const productData = {
                 title: document.getElementById('p-title').value,
                 price: parseFloat(document.getElementById('p-price').value),
                 category: categorySelect,
-                checkoutLink: checkoutLnk,
+                checkoutLink: document.getElementById('p-checkout').value.trim(),
                 imageUrls: urls,
                 description: document.getElementById('p-desc').value
             };
 
-            if (editingProductId) {
-                await updateDoc(doc(dbRef, 'tna_products', editingProductId), productData);
-                showToast('Product Updated Successfully!');
-            } else {
-                productData.reviews = [];
-                productData.createdAt = serverTimestamp();
-                await addDoc(collection(dbRef, 'tna_products'), productData);
-                showToast('Product Published to Store!');
+            try {
+                if (editingProductId) {
+                    await updateDoc(doc(dbRef, 'tna_products', editingProductId), productData);
+                    showToast('Product Updated!');
+                } else {
+                    productData.reviews = [];
+                    productData.createdAt = serverTimestamp();
+                    await addDoc(collection(dbRef, 'tna_products'), productData);
+                    showToast('Product Published!');
+                }
+                resetAdminEditState();
+                document.getElementById('tab-manage').click();
+            } catch (error) {
+                showToast('Permission Denied', 'error');
+                btn.innerText = editingProductId ? "Update Product" : "Publish Product";
             }
-            
-            resetAdminEditState();
-            document.getElementById('tab-manage').click();
         };
 
         function renderAdminList() {
-            const list = document.getElementById('admin-product-list');
-            list.innerHTML = allProducts.length === 0 ? '<div class="text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300"><i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i><p class="text-gray-500 font-medium">No products uploaded yet.</p></div>' : '';
-            
-            allProducts.forEach(p => {
-                const img = p.imageUrls ? p.imageUrls[0] : 'https://placehold.co/100';
-                const div = document.createElement('div');
-                div.className = 'bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm hover:shadow-md transition-shadow';
-                div.innerHTML = `
-                    <div class="flex items-center gap-4 overflow-hidden">
-                        <img src="${img}" class="w-16 h-16 object-cover rounded-xl flex-shrink-0 bg-gray-100">
-                        <div class="overflow-hidden">
-                            <h4 class="font-bold text-gray-900 truncate text-base mb-0.5">${p.title}</h4>
-                            <div class="flex items-center gap-2">
-                                <span class="bg-indigo-50 text-indigo-600 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">${p.category}</span>
-                                <span class="text-sm text-gray-500 font-bold">$${p.price}</span>
-                            </div>
+            document.getElementById('admin-product-list').innerHTML = allProducts.map(p => `
+                <div class="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <img src="${p.imageUrls ? p.imageUrls[0] : ''}" class="w-12 h-12 object-cover rounded bg-gray-100">
+                        <div>
+                            <h4 class="font-bold text-sm">${p.title}</h4>
+                            <span class="text-xs text-gray-500 font-bold">$${p.price}</span>
                         </div>
                     </div>
-                    <div class="flex gap-2 flex-shrink-0 ml-4">
-                        <button class="text-indigo-600 hover:bg-indigo-50 w-10 h-10 rounded-full flex justify-center items-center transition-colors" onclick="editProduct('${p.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button class="text-red-500 hover:bg-red-50 w-10 h-10 rounded-full flex justify-center items-center transition-colors" onclick="deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                    <div class="flex gap-2">
+                        <button class="text-indigo-600 p-2" onclick="editProduct('${p.id}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="text-red-500 p-2" onclick="deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                `;
-                list.appendChild(div);
-            });
+                </div>
+            `).join('');
         }
 
         window.deleteProduct = async (id) => {
-            if (!confirm('Are you sure you want to delete this product?')) return;
-            await deleteDoc(doc(dbRef, 'tna_products', id));
-            showToast('Product removed from store.', 'info');
+            if (confirm('Delete this product?')) {
+                try { await deleteDoc(doc(dbRef, 'tna_products', id)); showToast('Product removed.'); }
+                catch(e) { showToast('Permission Denied', 'error'); }
+            }
         };
     </script>
 </body>
 </html>
-
-
