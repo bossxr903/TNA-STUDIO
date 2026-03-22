@@ -22,7 +22,7 @@
     <div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2 w-[90%] max-w-sm pointer-events-none"></div>
 
     <div class="px-6 py-4 bg-indigo-600 text-white flex justify-between items-center shadow-md z-10">
-        <h2 class="text-lg font-bold flex items-center"><i class="fa-solid fa-gear mr-3 text-indigo-200"></i> TNA Admin Panel</h2>
+        <h2 class="text-lg font-bold flex items-center"><i class="fa-solid fa-gear mr-3 text-indigo-200"></i> TNA Admin Panel <span class="ml-2 bg-red-500 text-xs px-2 py-0.5 rounded-full">v2</span></h2>
         <a href="index.html" class="text-sm font-bold text-indigo-100 hover:text-white flex items-center bg-indigo-700/50 px-3 py-1.5 rounded-lg transition-colors">
             <i class="fa-solid fa-store mr-2"></i> View Store
         </a>
@@ -100,7 +100,6 @@
                 </div>
             </div>
 
-            <!-- Manage Products -->
             <div id="content-manage" class="hidden absolute inset-0 overflow-y-auto p-4 md:p-8">
                 <div class="max-w-4xl mx-auto">
                     <h3 class="font-black text-xl text-gray-800 mb-4">Manage Content</h3>
@@ -108,7 +107,6 @@
                 </div>
             </div>
 
-            <!-- Categories -->
             <div id="content-categories" class="hidden absolute inset-0 overflow-y-auto p-4 md:p-8">
                 <div class="max-w-2xl mx-auto">
                     <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
@@ -121,7 +119,6 @@
                 </div>
             </div>
 
-            <!-- Links -->
             <div id="content-links" class="hidden absolute inset-0 overflow-y-auto p-4 md:p-8">
                 <div class="max-w-2xl mx-auto">
                     <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
@@ -159,6 +156,7 @@
         const dbRef = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
 
+        // 🟢 মেইন অ্যাডমিন ইমেইল - বুলেটপ্রুফ করা হয়েছে
         const MASTER_ADMIN_EMAIL = "princemarsal75@gmail.com";
 
         let allProducts = [];
@@ -167,16 +165,16 @@
         let editingProductId = null;
         let unsubscribeProducts, unsubscribeCategories, unsubscribeLinks;
 
-        window.showToast = (message, type = 'success') => {
+        window.showToast = (message, type = 'success', duration = 3000) => {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = `p-4 rounded-xl shadow-2xl text-white font-bold pointer-events-auto toast-enter flex items-center ${type === 'success' ? 'bg-black' : 'bg-red-500'}`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle text-green-400' : 'fa-triangle-exclamation text-white'} mr-3 text-lg"></i> ${message}`;
+            toast.className = `p-4 rounded-xl shadow-2xl text-white font-bold pointer-events-auto toast-enter flex items-center ${type === 'success' ? 'bg-black' : 'bg-red-600'}`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle text-green-400' : 'fa-triangle-exclamation text-white'} mr-3 text-lg"></i> <span class="text-sm">${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => {
                 toast.classList.replace('toast-enter', 'toast-exit');
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, duration);
         };
 
         const loginBtn = document.getElementById('admin-login-btn');
@@ -190,23 +188,28 @@
             } catch (error) {
                 loginBtn.classList.remove('hidden');
                 loginLoading.classList.add('hidden');
-                showToast('Login Failed', 'error');
+                showToast('Login Canceled or Failed', 'error');
             }
         };
 
         onAuthStateChanged(authRef, (user) => {
             if (user) {
-                if (user.email === MASTER_ADMIN_EMAIL) {
+                // 🟢 বুলেটপ্রুফ চেক (বড় হাতের বা স্পেস থাকলে সেটা ফিক্স করে নিবে)
+                const safeUserEmail = user.email.toLowerCase().trim();
+                const safeAdminEmail = MASTER_ADMIN_EMAIL.toLowerCase().trim();
+
+                if (safeUserEmail === safeAdminEmail) {
                     document.getElementById('admin-login-view').classList.add('hidden');
                     document.getElementById('admin-dashboard-view').classList.remove('hidden');
                     document.getElementById('admin-dashboard-view').classList.add('flex');
-                    showToast('Welcome back, Admin!');
+                    showToast('Welcome back, Master Admin!');
                     loadAdminData();
                 } else {
                     signOut(authRef);
                     loginBtn.classList.remove('hidden');
                     loginLoading.classList.add('hidden');
-                    showToast('Access Denied.', 'error');
+                    // 🔴 এখন যদি ফেইল করে, তাহলে স্ক্রিনে দেখিয়ে দিবে সে কোন ইমেইল পেয়েছে!
+                    showToast(`Access Denied! Received: ${safeUserEmail}`, 'error', 6000);
                 }
             } else {
                 document.getElementById('admin-dashboard-view').classList.add('hidden');
@@ -364,7 +367,7 @@
                 resetAdminEditState();
                 document.getElementById('tab-manage').click();
             } catch (error) {
-                showToast('Error', 'error');
+                showToast('Error or Permission Denied', 'error');
                 btn.innerText = "Publish Content";
             }
         };
@@ -373,7 +376,7 @@
             document.getElementById('admin-product-list').innerHTML = allProducts.map(p => `
                 <div class="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
                     <div class="flex items-center gap-4">
-                        <img src="${p.imageUrls ? p.imageUrls[0] : ''}" class="w-12 h-12 object-cover rounded bg-gray-100">
+                        <img src="${p.imageUrls && p.imageUrls.length > 0 ? p.imageUrls[0] : ''}" class="w-12 h-12 object-cover rounded bg-gray-100">
                         <div>
                             <h4 class="font-bold text-sm line-clamp-1">${p.title}</h4>
                             <span class="text-xs text-indigo-500 font-bold"><i class="fa-solid fa-link"></i> Linked</span>
@@ -390,5 +393,3 @@
     </script>
 </body>
 </html>
-
-
