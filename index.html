@@ -3,168 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TNA STUDIO - Free Digital Assets</title>
-    <!-- Tailwind CSS -->
+    <title>TNA Store - Trending Products</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background-color: #f4f5f7; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .product-card { transition: all 0.2s ease; border: 2px solid transparent; cursor: pointer; }
-        .product-card:hover { transform: translateY(-4px); border-color: #000; box-shadow: 6px 6px 0px 0px rgba(0,0,0,1); }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #000; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        
+        /* Modern E-commerce Card Hover */
+        .product-card { transition: all 0.3s ease; background: #fff; border-radius: 12px; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+        
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #ea580c; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .toast-enter { animation: toastIn 0.3s forwards; }
-        .toast-exit { animation: toastOut 0.3s forwards; }
-        @keyframes toastIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes toastOut { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
-        .modal-enter { animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes modalIn { from { transform: scale(0.95) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
     </style>
 </head>
 <body class="text-gray-900 overflow-x-hidden min-h-screen flex flex-col">
 
-    <!-- Toast Notifications -->
-    <div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2 w-[90%] max-w-sm pointer-events-none"></div>
-
-    <!-- Navbar -->
+    <!-- Navbar - E-Commerce Vibe -->
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
                 <div class="flex items-center gap-3">
-                    <button id="menu-btn" class="text-black hover:text-gray-600 p-1"><i class="fa-solid fa-bars text-xl md:text-2xl"></i></button>
+                    <button id="menu-btn" class="text-gray-500 hover:text-orange-600 p-1 md:hidden"><i class="fa-solid fa-bars text-xl"></i></button>
                     <div class="flex-shrink-0 flex items-center select-none cursor-pointer" onclick="showHomeView()">
-                        <i class="fa-solid fa-shapes text-xl md:text-2xl text-black mr-2"></i>
-                        <span class="font-black text-lg md:text-2xl tracking-tight text-black">TNA <span class="text-indigo-600">STUDIO</span></span>
+                        <i class="fa-solid fa-cart-shopping text-2xl text-orange-600 mr-2"></i>
+                        <span class="font-black text-2xl tracking-tight text-gray-900">TNA <span class="text-orange-600">STORE</span></span>
                     </div>
                 </div>
 
-                <div class="hidden md:flex flex-1 max-w-lg mx-8">
-                    <div class="relative w-full">
-                        <input type="text" id="search-input" class="w-full bg-gray-100 border border-transparent rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:border-black focus:bg-white" placeholder="Search for files...">
-                        <button class="absolute right-0 top-0 mt-2 mr-3 text-gray-500"><i class="fa-solid fa-search"></i></button>
+                <!-- Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-2xl mx-8">
+                    <div class="relative w-full flex">
+                        <input type="text" id="search-input" class="w-full bg-gray-100 border border-transparent rounded-l-full py-2.5 pl-6 pr-4 focus:outline-none focus:bg-white focus:border-orange-500 transition-colors" placeholder="Search trending products...">
+                        <button class="bg-orange-600 text-white px-6 rounded-r-full hover:bg-orange-700 transition-colors"><i class="fa-solid fa-search"></i></button>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <div id="auth-section"></div>
+                <div class="flex items-center gap-4" id="auth-section">
+                    <!-- Auth UI injected here -->
                 </div>
             </div>
             
+            <!-- Mobile Search -->
             <div class="md:hidden pb-3">
-                <div class="relative w-full">
-                    <input type="text" id="mobile-search-input" class="w-full bg-gray-100 border border-transparent rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:border-black text-sm" placeholder="Search files...">
+                <div class="relative w-full flex shadow-sm">
+                    <input type="text" id="mobile-search-input" class="w-full bg-gray-100 border border-gray-200 rounded-l-lg py-2 pl-4 pr-2 focus:outline-none text-sm" placeholder="Search products...">
+                    <button class="bg-orange-600 text-white px-4 rounded-r-lg"><i class="fa-solid fa-search"></i></button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- USER LOGIN MODAL -->
-    <div id="login-modal-overlay" class="fixed inset-0 bg-black/60 z-[100] hidden backdrop-blur-sm flex items-center justify-center p-4">
-        <div id="login-modal-box" class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden hidden">
-            <div class="p-6 md:p-8 relative">
-                <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <div class="text-center mb-6">
-                    <i class="fa-solid fa-shapes text-4xl text-black mb-2"></i>
-                    <h2 class="text-2xl font-black">Welcome Back</h2>
-                    <p class="text-gray-500 text-sm mt-1">Sign in securely with your Google account.</p>
-                </div>
-                <button onclick="handleGoogleLogin()" class="w-full flex items-center justify-center gap-3 border border-gray-300 hover:bg-gray-50 font-bold py-3 rounded-xl transition-colors mb-4 relative overflow-hidden group">
-                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5">
-                    Continue with Google
-                    <div id="google-loading" class="absolute inset-0 bg-white flex items-center justify-center hidden">
-                        <i class="fa-solid fa-circle-notch fa-spin text-gray-500 text-xl"></i>
-                    </div>
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Workspace -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-8 flex-1 w-full relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-6 flex-1 w-full relative">
         
-        <!-- MAIN VIEW -->
-        <div id="view-home" class="flex flex-col md:flex-row gap-8 w-full transition-opacity duration-300">
-            <!-- Sidebar Categories -->
-            <aside class="w-full md:w-64 flex-shrink-0">
-                <div class="md:bg-white md:rounded-xl md:p-5 md:border md:border-gray-200 md:shadow-sm md:sticky md:top-24">
-                    <h3 class="hidden md:block font-bold text-lg mb-4 text-black border-b pb-2">Categories</h3>
-                    <ul class="flex md:flex-col overflow-x-auto hide-scrollbar space-x-2 md:space-x-0 md:space-y-2 pb-2 md:pb-0" id="category-list">
-                        <li><button class="cat-btn w-full whitespace-nowrap md:whitespace-normal text-left px-4 md:px-3 py-2 rounded-full md:rounded-lg font-medium bg-black text-white text-sm md:text-base shadow-sm" data-cat="All">All Items</button></li>
-                    </ul>
-                </div>
-            </aside>
+        <!-- SIDEBAR (Categories) -->
+        <aside class="hidden md:block w-64 flex-shrink-0">
+            <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm sticky top-24">
+                <h3 class="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2 uppercase text-sm tracking-wider">Categories</h3>
+                <ul class="space-y-1" id="category-list">
+                    <!-- Categories injected here -->
+                </ul>
+            </div>
+        </aside>
 
-            <main class="flex-1 min-w-0">
-                <div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-2">
-                    <h2 class="text-xl md:text-2xl font-bold" id="current-category-title">All Items</h2>
-                    <span class="text-gray-500 text-sm font-medium bg-gray-200 px-3 py-1 rounded-full" id="product-count">0 items</span>
-                </div>
+        <!-- MAIN VIEW (Grid) -->
+        <div id="view-home" class="flex-1 min-w-0 transition-opacity duration-300">
+            <!-- Mobile Category Scroll -->
+            <div class="md:hidden mb-4 overflow-x-auto hide-scrollbar">
+                <div class="flex space-x-2" id="mobile-category-list"></div>
+            </div>
 
-                <div id="loading-state" class="flex flex-col items-center justify-center py-20">
-                    <div class="loader mb-4"></div>
-                    <p class="text-gray-500 font-medium mt-3" id="loading-text">Connecting to Server...</p>
-                </div>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800" id="current-category-title">All Products</h2>
+                <span class="text-gray-500 text-sm font-medium" id="product-count">0 items found</span>
+            </div>
 
-                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
-                
-                <div id="empty-state" class="hidden text-center py-20 bg-white rounded-xl border border-gray-200 shadow-sm">
-                    <i class="fa-solid fa-box-open text-6xl text-gray-300 mb-4"></i>
-                    <h3 class="text-xl font-bold text-gray-700">No content found</h3>
-                    <p class="text-gray-500 text-sm mt-2">Check back later for new uploads.</p>
-                </div>
-            </main>
+            <!-- Loader -->
+            <div id="loading-state" class="flex flex-col items-center justify-center py-20">
+                <div class="loader mb-4"></div>
+                <p class="text-gray-500 font-medium">Loading Store...</p>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 hidden"></div>
+            
+            <div id="empty-state" class="hidden text-center py-20 bg-white rounded-xl border border-gray-200 shadow-sm">
+                <i class="fa-solid fa-box-open text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-700">No products found</h3>
+            </div>
         </div>
 
         <!-- PRODUCT DETAILS VIEW -->
-        <div id="view-details" class="hidden w-full flex-col bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-8 animate-[toastIn_0.3s]">
-            <button onclick="showHomeView()" class="self-start mb-6 text-gray-500 hover:text-black font-bold flex items-center">
-                <i class="fa-solid fa-arrow-left mr-2"></i> Back to Home
+        <div id="view-details" class="hidden flex-1 flex-col bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-8">
+            <button onclick="showHomeView()" class="self-start mb-6 text-gray-500 hover:text-orange-600 font-bold flex items-center transition-colors">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Back
             </button>
             
-            <div class="flex flex-col lg:flex-row gap-8">
+            <div class="flex flex-col md:flex-row gap-8 lg:gap-12">
                 <!-- Gallery -->
-                <div class="w-full lg:w-1/2">
-                    <div class="bg-gray-100 rounded-xl overflow-hidden aspect-video relative">
-                        <img id="detail-main-img" src="" class="w-full h-full object-cover">
+                <div class="w-full md:w-1/2">
+                    <div class="bg-gray-100 rounded-xl overflow-hidden aspect-square relative border border-gray-200">
+                        <img id="detail-main-img" src="" class="w-full h-full object-contain mix-blend-multiply p-4">
                     </div>
-                    <div id="detail-thumbnails" class="flex gap-2 mt-3 overflow-x-auto hide-scrollbar pb-2"></div>
+                    <div id="detail-thumbnails" class="flex gap-2 mt-4 overflow-x-auto hide-scrollbar pb-2"></div>
                 </div>
 
                 <!-- Product Info -->
-                <div class="w-full lg:w-1/2 flex flex-col">
-                    <div class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded font-bold uppercase tracking-wide w-max mb-2" id="detail-category">Category</div>
-                    <h1 id="detail-title" class="text-2xl md:text-3xl font-black text-black leading-tight mb-2">Title</h1>
-                    <div class="flex items-center text-yellow-500 text-sm mb-4">
+                <div class="w-full md:w-1/2 flex flex-col">
+                    <div class="text-sm text-orange-600 font-bold tracking-wide uppercase mb-2" id="detail-category">Category</div>
+                    <h1 id="detail-title" class="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-4">Product Title</h1>
+                    
+                    <div class="flex items-center text-yellow-500 text-sm mb-6">
                         <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
                         <span class="text-gray-400 ml-2 text-xs" id="detail-review-count">(0 Reviews)</span>
                     </div>
+
+                    <div class="bg-orange-50 p-4 rounded-xl border border-orange-100 mb-6">
+                        <span class="text-sm text-gray-500">Price</span>
+                        <div class="text-4xl font-black text-orange-600" id="detail-price">$0.00</div>
+                    </div>
                     
-                    <p id="detail-desc" class="text-gray-600 mb-8 whitespace-pre-wrap leading-relaxed flex-grow">Desc</p>
+                    <div class="mb-8">
+                        <h3 class="font-bold text-gray-900 mb-2 border-b pb-2">Product Description</h3>
+                        <p id="detail-desc" class="text-gray-600 whitespace-pre-wrap leading-relaxed text-sm"></p>
+                    </div>
                     
-                    <div class="flex gap-4 mt-auto">
-                        <!-- THE MAGIC BUTTON -->
-                        <button id="detail-buy-btn" class="w-full bg-indigo-600 text-white hover:bg-indigo-700 font-bold py-4 rounded-xl transition-colors shadow-lg flex justify-center items-center text-lg">
-                            Download File <i class="fa-solid fa-download ml-2"></i>
+                    <div class="mt-auto">
+                        <!-- THE REDIRECT BUTTON -->
+                        <!-- Ekhane click korle direct affiliate link e jabe -->
+                        <button id="detail-buy-btn" class="w-full bg-orange-600 text-white hover:bg-orange-700 font-black py-4 rounded-xl transition-all shadow-lg hover:shadow-orange-500/30 flex justify-center items-center text-lg transform hover:-translate-y-1">
+                            Buy Now <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
                         </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Customer Reviews -->
-            <div class="mt-12 pt-8 border-t border-gray-200">
-                <h3 class="text-2xl font-black mb-6">User Reviews</h3>
-                <div class="flex flex-col md:flex-row gap-8">
-                    <div class="w-full md:w-2/3 space-y-4" id="detail-reviews-list"></div>
-                    <div class="w-full md:w-1/3 bg-gray-50 p-6 rounded-xl border border-gray-200 h-max">
-                        <h4 class="font-bold mb-4">Write a Review</h4>
-                        <form id="review-form" class="space-y-3">
-                            <textarea id="rev-text" placeholder="Share your experience..." required rows="3" class="w-full p-2 border border-gray-300 rounded focus:border-black outline-none resize-none"></textarea>
-                            <button type="submit" class="w-full bg-black text-white font-bold py-2 rounded hover:bg-gray-800 transition-colors shadow">Submit Review</button>
-                        </form>
+                        <p class="text-center text-xs text-gray-400 mt-3"><i class="fa-solid fa-shield-halved"></i> Secure checkout via official store</p>
                     </div>
                 </div>
             </div>
@@ -172,26 +148,22 @@
 
     </div>
 
-    <!-- MAIN SIDEBAR (Menu) -->
-    <div id="main-sidebar" class="fixed inset-y-0 left-0 w-[280px] bg-white shadow-2xl z-[60] transform -translate-x-full transition-transform duration-300 flex flex-col">
-        <div class="p-6 bg-black text-white flex justify-between items-center">
-            <span class="font-black text-xl tracking-tight">TNA Menu</span>
-            <button id="close-menu-btn" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <!-- Mobile Menu Overlay -->
+    <div id="main-sidebar" class="fixed inset-y-0 left-0 w-[280px] bg-white shadow-2xl z-[60] transform -translate-x-full transition-transform duration-300 flex flex-col md:hidden">
+        <div class="p-5 bg-gray-50 border-b flex justify-between items-center">
+            <span class="font-black text-xl text-gray-900">Menu</span>
+            <button id="close-menu-btn" class="text-gray-500 hover:text-black text-xl p-1"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="flex-1 overflow-y-auto py-4">
-            <div class="px-6 mb-4">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Explore</p>
-                <ul class="space-y-1" id="dynamic-sidebar-links"></ul>
-            </div>
+        <div class="flex-1 overflow-y-auto p-5">
+            <!-- Sidebar links can be added here if needed -->
         </div>
     </div>
-
     <div id="overlay-main" class="fixed inset-0 bg-black/50 z-[50] hidden backdrop-blur-sm"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC9toKHOdJa-rWN7nEeLveFy5g0bbYvhUY",
@@ -205,106 +177,49 @@
         const app = initializeApp(firebaseConfig);
         const authRef = getAuth(app);
         const dbRef = getFirestore(app);
-        const googleProvider = new GoogleAuthProvider();
 
-        let allProducts = [];
-        let allCategories = [];
+        let allProducts = [], allCategories = [];
         let currentCategory = 'All';
-        let currentViewedProduct = null;
 
-        window.showToast = (message, type = 'success') => {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `p-4 rounded-lg shadow-xl text-white font-bold pointer-events-auto toast-enter ${type === 'success' ? 'bg-black' : 'bg-red-500'}`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-triangle-exclamation'} mr-2"></i> ${message}`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => toast.remove(), 300); }, 3000);
-        };
-
+        // Initialize Anonymous Auth to read DB
         signInAnonymously(authRef).then(() => {
             onSnapshot(collection(dbRef, 'tna_products'), (snapshot) => {
                 allProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 allProducts.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
-                finishLoading();
-            }, () => { document.getElementById('loading-text').innerText = "Failed to connect to database."; });
+                document.getElementById('loading-state').classList.add('hidden');
+                renderProducts();
+            });
 
             onSnapshot(collection(dbRef, 'tna_categories'), (snapshot) => {
                 allCategories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 allCategories.sort((a, b) => a.name.localeCompare(b.name));
                 renderCategoriesUI();
             });
+        });
 
-            onSnapshot(collection(dbRef, 'tna_links'), (snapshot) => {
-                const links = snapshot.docs.map(doc => doc.data());
-                links.sort((a, b) => (a.createdAt?.toMillis() || 0) - (b.createdAt?.toMillis() || 0));
-                const list = document.getElementById('dynamic-sidebar-links');
-                if(links.length === 0) { list.innerHTML = `<li><p class="text-sm text-gray-500 italic mt-2">No links added yet.</p></li>`; } 
-                else { list.innerHTML = links.map(l => `<li><a href="${l.url}" class="w-full text-left py-2.5 text-gray-700 hover:text-indigo-600 font-medium block transition-colors flex items-center"><i class="fa-solid ${l.icon} w-6 text-gray-400"></i> <span class="ml-1">${l.title}</span></a></li>`).join(''); }
-            });
-        }).catch(() => { document.getElementById('loading-text').innerText = "Authentication Failed."; });
-
-        let isLoaded = false;
-        function finishLoading() {
-            if(isLoaded) return;
-            isLoaded = true;
-            document.getElementById('loading-state').classList.add('hidden');
-            renderProducts();
-        }
-
-        let loggedInUser = JSON.parse(localStorage.getItem('tna_user')) || null;
-        function updateAuthUI() {
-            const authSection = document.getElementById('auth-section');
-            if (loggedInUser) {
-                authSection.innerHTML = `
-                    <div class="relative group cursor-pointer">
-                        <div class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors">
-                            <img src="${loggedInUser.avatar}" class="w-7 h-7 rounded-full object-cover border border-gray-300" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=User'">
-                            <span class="text-sm font-bold hidden sm:block truncate max-w-[100px]">${loggedInUser.name.split(' ')[0]}</span>
-                        </div>
-                        <div class="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 overflow-hidden">
-                            <div class="px-4 py-3 border-b border-gray-50 bg-gray-50/50">
-                                <p class="text-sm font-bold text-gray-900 truncate">${loggedInUser.name}</p>
-                                <p class="text-xs text-gray-500 truncate">${loggedInUser.email}</p>
-                            </div>
-                            <button onclick="logoutUser()" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-medium transition-colors"><i class="fa-solid fa-arrow-right-from-bracket w-5 text-red-400"></i> Sign Out</button>
-                        </div>
-                    </div>`;
-            } else {
-                authSection.innerHTML = `<button onclick="openLoginModal()" class="text-sm font-bold bg-black text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors shadow-sm hidden md:block">Login</button><button onclick="openLoginModal()" class="md:hidden text-gray-600 hover:text-black bg-gray-100 p-2 rounded-full"><i class="fa-solid fa-user text-lg"></i></button>`;
-            }
-        }
-
-        window.openLoginModal = () => { document.getElementById('login-modal-overlay').classList.remove('hidden'); document.getElementById('login-modal-box').classList.remove('hidden'); document.getElementById('login-modal-box').classList.add('modal-enter'); };
-        window.closeLoginModal = () => { document.getElementById('login-modal-overlay').classList.add('hidden'); document.getElementById('login-modal-box').classList.add('hidden'); document.getElementById('login-modal-box').classList.remove('modal-enter'); };
-
-        window.handleGoogleLogin = async () => {
-            try {
-                document.getElementById('google-loading').classList.remove('hidden');
-                const result = await signInWithPopup(authRef, googleProvider);
-                loggedInUser = { name: result.user.displayName, email: result.user.email, avatar: result.user.photoURL, uid: result.user.uid };
-                localStorage.setItem('tna_user', JSON.stringify(loggedInUser));
-                updateAuthUI(); closeLoginModal(); showToast('Successfully logged in!');
-            } catch (error) { if(error.code !== 'auth/popup-closed-by-user') showToast('Login Failed.', 'error'); } 
-            finally { document.getElementById('google-loading').classList.add('hidden'); }
-        };
-
-        window.logoutUser = () => { signOut(authRef); loggedInUser = null; localStorage.removeItem('tna_user'); updateAuthUI(); showToast('Signed out successfully'); };
-        updateAuthUI();
+        // Basic Login Button UI for top corner
+        document.getElementById('auth-section').innerHTML = `<button class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold px-4 py-2 rounded-full text-sm transition-colors"><i class="fa-solid fa-user mr-1"></i> Sign In</button>`;
 
         function renderCategoriesUI() {
-            const list = document.getElementById('category-list');
-            let sidebarHTML = `<li><button class="cat-btn w-full whitespace-nowrap md:whitespace-normal text-left px-4 md:px-3 py-2 rounded-full md:rounded-lg font-medium ${currentCategory === 'All' ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-600'} text-sm md:text-base shadow-sm transition-all" data-cat="All">All Items</button></li>`;
+            const listDesktop = document.getElementById('category-list');
+            const listMobile = document.getElementById('mobile-category-list');
+            
+            let htmlDesktop = `<li><button class="cat-btn w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${currentCategory === 'All' ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-600 hover:bg-gray-50'}" data-cat="All">All Products</button></li>`;
+            let htmlMobile = `<button class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium border ${currentCategory === 'All' ? 'bg-orange-600 border-orange-600 text-white' : 'bg-white border-gray-300 text-gray-700'}" data-cat="All">All</button>`;
+            
             allCategories.forEach(cat => {
-                const isActive = currentCategory === cat.name;
-                sidebarHTML += `<li><button class="cat-btn w-full whitespace-nowrap md:whitespace-normal text-left px-4 md:px-3 py-2 rounded-full md:rounded-lg font-medium ${isActive ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-600'} text-sm md:text-base shadow-sm transition-all" data-cat="${cat.name}">${cat.name}</button></li>`;
+                const isAct = currentCategory === cat.name;
+                htmlDesktop += `<li><button class="cat-btn w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${isAct ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-600 hover:bg-gray-50'}" data-cat="${cat.name}">${cat.name}</button></li>`;
+                htmlMobile += `<button class="cat-btn whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium border ${isAct ? 'bg-orange-600 border-orange-600 text-white' : 'bg-white border-gray-300 text-gray-700'}" data-cat="${cat.name}">${cat.name}</button>`;
             });
-            list.innerHTML = sidebarHTML;
+            
+            listDesktop.innerHTML = htmlDesktop;
+            listMobile.innerHTML = htmlMobile;
 
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.cat-btn').forEach(b => { b.classList.remove('bg-black', 'text-white'); b.classList.add('bg-white', 'text-gray-600'); });
-                    e.currentTarget.classList.remove('bg-white', 'text-gray-600'); e.currentTarget.classList.add('bg-black', 'text-white');
                     currentCategory = e.currentTarget.getAttribute('data-cat');
+                    renderCategoriesUI(); // Re-render to update active classes
                     renderProducts();
                 });
             });
@@ -315,44 +230,51 @@
             grid.innerHTML = '';
             let filtered = allProducts.filter(p => currentCategory === 'All' || p.category === currentCategory);
             const term = (document.getElementById('search-input').value || document.getElementById('mobile-search-input').value).toLowerCase();
-            if (term) filtered = filtered.filter(p => p.title.toLowerCase().includes(term) || p.description.toLowerCase().includes(term));
+            if (term) filtered = filtered.filter(p => p.title.toLowerCase().includes(term));
 
             document.getElementById('product-count').innerText = `${filtered.length} items`;
-            document.getElementById('current-category-title').innerText = currentCategory === 'All' ? 'All Items' : currentCategory;
+            document.getElementById('current-category-title').innerText = currentCategory === 'All' ? 'All Products' : currentCategory;
 
             if (filtered.length === 0) { grid.classList.add('hidden'); document.getElementById('empty-state').classList.remove('hidden'); } 
             else {
                 document.getElementById('empty-state').classList.add('hidden'); grid.classList.remove('hidden');
                 filtered.forEach(product => {
-                    const images = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls : ['https://placehold.co/600x400?text=No+Image'];
+                    const imgUrl = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://placehold.co/400x400?text=No+Image';
                     const card = document.createElement('div');
-                    card.className = 'product-card bg-white rounded-xl overflow-hidden flex flex-col h-full border border-gray-100 shadow-sm';
+                    card.className = 'product-card border border-gray-200 overflow-hidden flex flex-col cursor-pointer bg-white';
                     card.onclick = () => openProductDetails(product.id);
                     card.innerHTML = `
-                        <div class="h-48 w-full bg-gray-100 relative group">
-                            <img src="${images[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute top-2 left-2 bg-white/95 backdrop-blur-sm px-2 py-1 rounded text-[10px] uppercase font-bold text-gray-800 shadow-sm z-10">${product.category}</div>
+                        <div class="aspect-square w-full bg-gray-50 relative p-4 flex items-center justify-center">
+                            <img src="${imgUrl}" class="w-full h-full object-contain mix-blend-multiply hover:scale-105 transition-transform duration-500">
                         </div>
-                        <div class="p-5 flex flex-col flex-grow pointer-events-none">
-                            <h3 class="font-bold text-lg text-black mb-1.5 line-clamp-1">${product.title}</h3>
-                            <p class="text-gray-500 text-sm mb-4 line-clamp-2">${product.description}</p>
-                            <div class="flex mt-auto pt-4 border-t border-gray-100"><span class="text-sm font-bold text-indigo-600">Free Download</span></div>
+                        <div class="p-3 md:p-4 flex flex-col flex-grow">
+                            <div class="text-[10px] md:text-xs text-gray-400 uppercase tracking-wide mb-1">${product.category}</div>
+                            <h3 class="font-medium text-sm md:text-base text-gray-900 mb-2 line-clamp-2 leading-tight">${product.title}</h3>
+                            <div class="mt-auto flex items-center justify-between">
+                                <span class="text-lg md:text-xl font-black text-orange-600">$${product.price}</span>
+                                <button class="w-8 h-8 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors"><i class="fa-solid fa-plus text-sm"></i></button>
+                            </div>
                         </div>`;
                     grid.appendChild(card);
                 });
             }
         }
 
-        window.showHomeView = () => { document.getElementById('view-details').classList.add('hidden'); document.getElementById('view-home').classList.remove('hidden'); document.getElementById('view-home').classList.add('flex'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+        window.showHomeView = () => { 
+            document.getElementById('view-details').classList.add('hidden'); 
+            document.getElementById('view-home').classList.remove('hidden'); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        };
 
         window.openProductDetails = (id) => {
-            currentViewedProduct = allProducts.find(p => p.id === id);
-            if (!currentViewedProduct) return;
-            const p = currentViewedProduct;
-            const images = p.imageUrls && p.imageUrls.length > 0 ? p.imageUrls : ['https://placehold.co/600x400?text=No+Image'];
+            const p = allProducts.find(x => x.id === id);
+            if (!p) return;
+            
+            const images = p.imageUrls && p.imageUrls.length > 0 ? p.imageUrls : ['https://placehold.co/600x600?text=No+Image'];
             
             document.getElementById('detail-title').innerText = p.title;
             document.getElementById('detail-category').innerText = p.category;
+            document.getElementById('detail-price').innerText = `$${p.price}`;
             document.getElementById('detail-desc').innerText = p.description;
             document.getElementById('detail-main-img').src = images[0];
             
@@ -360,58 +282,37 @@
             thumbContainer.innerHTML = '';
             images.forEach(url => {
                 const img = document.createElement('img'); img.src = url;
-                img.className = "w-20 h-20 object-cover rounded cursor-pointer border-2 border-transparent hover:border-indigo-500 opacity-70 hover:opacity-100 transition-all flex-shrink-0";
+                img.className = "w-16 h-16 object-contain bg-gray-50 rounded cursor-pointer border-2 border-transparent hover:border-orange-500 opacity-70 hover:opacity-100 transition-all p-1";
                 img.onclick = () => document.getElementById('detail-main-img').src = url;
                 thumbContainer.appendChild(img);
             });
 
-            // MAGIC REDIRECT BUTTON
+            // 🟢 REDIRECT MAGIC 🟢
             const buyBtn = document.getElementById('detail-buy-btn');
             if (p.checkoutLink) {
-                buyBtn.classList.remove('opacity-50', 'pointer-events-none');
-                buyBtn.innerHTML = 'Download File <i class="fa-solid fa-download ml-2"></i>';
                 buyBtn.onclick = () => {
-                    // Convert link to Base64 and send to step1
-                    const secureLink = btoa(p.checkoutLink);
-                    window.location.href = `step1.html?target=${secureLink}`;
+                    // Direct affiliate link a open hobe notun tab e
+                    window.open(p.checkoutLink, '_blank');
                 };
-            } else {
-                buyBtn.onclick = null;
-                buyBtn.classList.add('opacity-50', 'pointer-events-none');
-                buyBtn.innerHTML = 'Link Not Available';
             }
 
-            renderReviews();
-            document.getElementById('view-home').classList.add('hidden'); document.getElementById('view-home').classList.remove('flex');
-            document.getElementById('view-details').classList.remove('hidden'); document.getElementById('view-details').classList.add('flex');
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-details').classList.remove('hidden');
+            document.getElementById('view-details').classList.add('flex');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-
-        function renderReviews() {
-            const list = document.getElementById('detail-reviews-list');
-            const reviews = currentViewedProduct.reviews || [];
-            document.getElementById('detail-review-count').innerText = `(${reviews.length} Reviews)`;
-            if (reviews.length === 0) { list.innerHTML = `<p class="text-gray-500 italic">No reviews yet.</p>`; return; }
-            list.innerHTML = reviews.map(r => `<div class="bg-gray-50 p-4 rounded-lg border border-gray-100"><div class="flex justify-between items-start mb-2"><span class="font-bold text-black">${r.name}</span><span class="text-xs text-gray-400">${r.date || ''}</span></div><div class="text-yellow-500 text-xs mb-2"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div><p class="text-gray-700 text-sm">${r.text}</p></div>`).join('');
-        }
-
-        document.getElementById('review-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!loggedInUser) { openLoginModal(); showToast('Please log in to leave a review', 'error'); return; }
-            const newRev = { name: loggedInUser.name, text: document.getElementById('rev-text').value, date: new Date().toLocaleDateString() };
-            if (!currentViewedProduct.reviews) currentViewedProduct.reviews = [];
-            currentViewedProduct.reviews.push(newRev);
-            await updateDoc(doc(dbRef, 'tna_products', currentViewedProduct.id), { reviews: currentViewedProduct.reviews });
-            e.target.reset(); renderReviews(); showToast('Review posted!');
-        });
 
         document.getElementById('search-input').addEventListener('input', renderProducts);
         document.getElementById('mobile-search-input').addEventListener('input', renderProducts);
 
-        const toggleMenu = (show) => { document.getElementById('main-sidebar').style.transform = show ? 'translateX(0)' : 'translateX(-100%)'; document.getElementById('overlay-main').classList.toggle('hidden', !show); };
-        document.getElementById('menu-btn').onclick = () => toggleMenu(true); document.getElementById('close-menu-btn').onclick = () => toggleMenu(false); document.getElementById('overlay-main').onclick = () => toggleMenu(false);
+        // Mobile Menu
+        const toggleMenu = (show) => { 
+            document.getElementById('main-sidebar').style.transform = show ? 'translateX(0)' : 'translateX(-100%)'; 
+            document.getElementById('overlay-main').classList.toggle('hidden', !show); 
+        };
+        document.getElementById('menu-btn').onclick = () => toggleMenu(true); 
+        document.getElementById('close-menu-btn').onclick = () => toggleMenu(false); 
+        document.getElementById('overlay-main').onclick = () => toggleMenu(false);
     </script>
 </body>
 </html>
-
-
