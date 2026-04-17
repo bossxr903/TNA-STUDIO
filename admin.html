@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TNA Admin Dashboard</title>
+    <title>TNA Store Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -21,113 +21,120 @@
 
     <div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2 w-[90%] max-w-sm pointer-events-none"></div>
 
-    <div class="px-6 py-4 bg-indigo-600 text-white flex justify-between items-center shadow-md z-10">
-        <h2 class="text-lg font-bold flex items-center"><i class="fa-solid fa-gear mr-3 text-indigo-200"></i> TNA Admin Panel <span class="ml-2 bg-red-500 text-xs px-2 py-0.5 rounded-full">v2</span></h2>
-        <a href="index.html" class="text-sm font-bold text-indigo-100 hover:text-white flex items-center bg-indigo-700/50 px-3 py-1.5 rounded-lg transition-colors">
+    <div class="px-6 py-4 bg-orange-600 text-white flex justify-between items-center shadow-md z-10">
+        <h2 class="text-lg font-bold flex items-center"><i class="fa-solid fa-cart-shopping mr-3 text-orange-200"></i> Store Admin <span class="ml-2 bg-black text-xs px-2 py-0.5 rounded-full">v1</span></h2>
+        <a href="index.html" class="text-sm font-bold text-orange-100 hover:text-white flex items-center bg-orange-700/50 px-3 py-1.5 rounded-lg transition-colors">
             <i class="fa-solid fa-store mr-2"></i> View Store
         </a>
     </div>
 
+    <!-- Admin Login -->
     <div id="admin-login-view" class="flex-1 flex flex-col items-center justify-center p-8 bg-gray-50 z-20 absolute inset-0 top-[60px]">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center border border-gray-100 relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 to-indigo-600"></div>
-            <i class="fa-solid fa-user-shield text-6xl text-indigo-500 mb-6"></i>
-            <h3 class="text-2xl font-black mb-2 text-gray-800">Admin Authorization</h3>
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-red-500"></div>
+            <i class="fa-solid fa-user-shield text-6xl text-orange-500 mb-6"></i>
+            <h3 class="text-2xl font-black mb-2 text-gray-800">Store Admin Login</h3>
             <p class="text-sm text-gray-500 mb-8">Please sign in with your authorized master account.</p>
             
             <button id="admin-login-btn" class="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 shadow-lg transition-colors flex justify-center items-center gap-3">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5">
                 <span>Sign in as Admin</span>
             </button>
-            <div id="login-loading" class="mt-4 text-indigo-600 font-bold text-sm hidden"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Verifying Identity...</div>
+            <div id="login-loading" class="mt-4 text-orange-600 font-bold text-sm hidden"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Verifying Identity...</div>
         </div>
     </div>
 
+    <!-- Admin Dashboard -->
     <div id="admin-dashboard-view" class="hidden flex-1 flex flex-col bg-white overflow-hidden relative">
         <div class="flex border-b border-gray-200 bg-white overflow-x-auto hide-scrollbar shadow-sm z-10">
-            <button id="tab-add" class="px-4 py-4 font-bold border-b-[3px] border-indigo-600 text-indigo-600 whitespace-nowrap transition-colors"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>Upload</button>
-            <button id="tab-manage" class="px-4 py-4 font-bold border-b-[3px] border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap transition-colors"><i class="fa-solid fa-box mr-2"></i>Products</button>
+            <button id="tab-add" class="px-4 py-4 font-bold border-b-[3px] border-orange-600 text-orange-600 whitespace-nowrap transition-colors"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>Add Product</button>
+            <button id="tab-manage" class="px-4 py-4 font-bold border-b-[3px] border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap transition-colors"><i class="fa-solid fa-box mr-2"></i>Manage</button>
             <button id="tab-categories" class="px-4 py-4 font-bold border-b-[3px] border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap transition-colors"><i class="fa-solid fa-tags mr-2"></i>Categories</button>
             <button id="tab-links" class="px-4 py-4 font-bold border-b-[3px] border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap transition-colors"><i class="fa-solid fa-link mr-2"></i>Menu Links</button>
         </div>
 
         <div class="flex-1 overflow-hidden relative bg-gray-50/50">
+            <!-- Add Product Content -->
             <div id="content-add" class="absolute inset-0 overflow-y-auto p-4 md:p-8">
                 <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-black text-xl text-gray-800" id="form-heading">Publish New Product</h3>
+                        <h3 class="font-black text-xl text-gray-800" id="form-heading">Add Trending Product</h3>
                         <button type="button" id="cancel-edit-btn" class="hidden text-sm bg-red-50 text-red-600 font-bold px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors" onclick="cancelEdit()">Cancel Edit</button>
                     </div>
                     
                     <form id="add-product-form" class="space-y-5">
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1.5">Product Title</label>
-                            <input type="text" id="p-title" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all">
+                            <input type="text" id="p-title" required placeholder="e.g., Smart Watch Series 8" class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-orange-500 transition-all">
                         </div>
                         
                         <div class="flex flex-col sm:flex-row gap-5">
                             <div class="flex-1">
-                                <label class="block text-sm font-bold text-gray-700 mb-1.5">Price ($) <span class="text-xs text-gray-400 font-normal">(Just for show)</span></label>
-                                <input type="number" id="p-price" step="0.01" value="0.00" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600 transition-all">
+                                <label class="block text-sm font-bold text-gray-700 mb-1.5">Price (BDT / USD)</label>
+                                <input type="number" id="p-price" step="0.01" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-orange-500 transition-all">
                             </div>
                             <div class="flex-1">
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5">Category</label>
-                                <select id="p-category" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600 bg-white transition-all"></select>
+                                <select id="p-category" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-orange-500 bg-white transition-all"></select>
                             </div>
                         </div>
                         
-                        <div class="bg-indigo-50/50 p-5 rounded-xl border border-indigo-100">
-                            <label class="block text-sm font-bold text-indigo-900 mb-1.5"><i class="fa-solid fa-link text-indigo-500 mr-1"></i> Target Download Link (Drive/Mega/Mediafire)</label>
-                            <input type="url" id="p-checkout" placeholder="https://drive.google.com/..." required class="w-full border border-indigo-200 p-3 rounded-xl focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 text-sm bg-white transition-all">
-                            <p class="text-xs text-indigo-500 mt-2 font-medium">Ei link tai ad page gulo par hoyar por user pabe.</p>
+                        <div class="bg-orange-50/50 p-5 rounded-xl border border-orange-100">
+                            <label class="block text-sm font-bold text-orange-900 mb-1.5"><i class="fa-solid fa-link text-orange-500 mr-1"></i> Buy Now / Affiliate Redirect URL</label>
+                            <input type="url" id="p-checkout" placeholder="https://s.click.aliexpress.com/..." required class="w-full border border-orange-200 p-3 rounded-xl focus:outline-none focus:border-orange-500 text-sm bg-white transition-all">
+                            <p class="text-xs text-orange-600 mt-2 font-medium">User ekhane click korle direct ei link e chole jabe.</p>
                         </div>
 
                         <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                            <label class="block text-sm font-bold text-gray-700 mb-3"><i class="fa-regular fa-images text-gray-400 mr-1"></i> Image URLs (Direct Links)</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-3"><i class="fa-regular fa-images text-gray-400 mr-1"></i> Product Images (URLs)</label>
                             <div id="image-inputs-container" class="space-y-3">
-                                <input type="url" name="img-url" required placeholder="Main Image URL (e.g. Imgur link)" class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 transition-all text-sm">
+                                <input type="url" name="img-url" required placeholder="Main Image URL" class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 transition-all text-sm">
                             </div>
-                            <button type="button" id="add-more-img-btn" class="mt-3 text-indigo-600 text-sm font-bold hover:text-indigo-800 flex items-center"><i class="fa-solid fa-plus-circle mr-1"></i> Add Another Image</button>
+                            <button type="button" id="add-more-img-btn" class="mt-3 text-orange-600 text-sm font-bold hover:text-orange-800 flex items-center"><i class="fa-solid fa-plus-circle mr-1"></i> Add Another Image</button>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Description</label>
-                            <textarea id="p-desc" required rows="4" class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600 transition-all resize-none"></textarea>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Description (Features & Details)</label>
+                            <textarea id="p-desc" required rows="4" class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-orange-500 transition-all resize-none"></textarea>
                         </div>
                         
-                        <button type="submit" id="submit-product-btn" class="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 shadow-lg transition-colors text-lg mt-2">Publish Content</button>
+                        <button type="submit" id="submit-product-btn" class="w-full bg-orange-600 text-white font-bold py-4 rounded-xl hover:bg-orange-700 shadow-lg transition-colors text-lg mt-2">Publish Product</button>
                     </form>
                 </div>
             </div>
 
+            <!-- Content Manage, Categories, Links logic is identical to previous, just color changed -->
+            <!-- MANAGE PRODUCTS -->
             <div id="content-manage" class="hidden absolute inset-0 overflow-y-auto p-4 md:p-8">
                 <div class="max-w-4xl mx-auto">
-                    <h3 class="font-black text-xl text-gray-800 mb-4">Manage Content</h3>
+                    <h3 class="font-black text-xl text-gray-800 mb-4">Manage Products</h3>
                     <div id="admin-product-list" class="space-y-4"></div>
                 </div>
             </div>
 
+            <!-- CATEGORIES -->
             <div id="content-categories" class="hidden absolute inset-0 overflow-y-auto p-4 md:p-8">
                 <div class="max-w-2xl mx-auto">
                     <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
                         <form id="add-category-form" class="flex flex-col sm:flex-row gap-3">
-                            <input type="text" id="new-cat-name" placeholder="Category Name" required class="flex-1 border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:border-indigo-600">
-                            <button type="submit" id="btn-save-cat" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-xl font-bold shadow-md">Add</button>
+                            <input type="text" id="new-cat-name" placeholder="E.g. Electronics, Fashion..." required class="flex-1 border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:border-orange-500">
+                            <button type="submit" id="btn-save-cat" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3.5 rounded-xl font-bold shadow-md">Add Category</button>
                         </form>
                     </div>
                     <div id="admin-category-list" class="space-y-3"></div>
                 </div>
             </div>
 
+            <!-- LINKS -->
             <div id="content-links" class="hidden absolute inset-0 overflow-y-auto p-4 md:p-8">
                 <div class="max-w-2xl mx-auto">
                     <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
                         <form id="add-link-form" class="space-y-4">
                             <div class="flex flex-col sm:flex-row gap-3">
-                                <div class="flex-1"><input type="text" id="link-title" placeholder="Title" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600"></div>
-                                <div class="flex-1"><input type="text" id="link-url" placeholder="URL" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-indigo-600"></div>
+                                <div class="flex-1"><input type="text" id="link-title" placeholder="Title" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-orange-500"></div>
+                                <div class="flex-1"><input type="text" id="link-url" placeholder="URL" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-orange-500"></div>
                             </div>
-                            <button type="submit" id="btn-save-link" class="w-full bg-black hover:bg-gray-800 text-white py-3 rounded-xl font-bold">Add to Menu</button>
+                            <button type="submit" id="btn-save-link" class="w-full bg-black hover:bg-gray-800 text-white py-3 rounded-xl font-bold">Add Link</button>
                         </form>
                     </div>
                     <div id="admin-links-list" class="space-y-3"></div>
@@ -137,6 +144,7 @@
         </div>
     </div>
 
+    <!-- Firebase Script (Aager Tai) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -156,70 +164,46 @@
         const dbRef = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
 
-        // 🟢 মেইন অ্যাডমিন ইমেইল - বুলেটপ্রুফ করা হয়েছে
         const MASTER_ADMIN_EMAIL = "princemarsal75@gmail.com";
 
-        let allProducts = [];
-        let allCategories = [];
-        let allLinks = [];
+        let allProducts = [], allCategories = [], allLinks = [];
         let editingProductId = null;
         let unsubscribeProducts, unsubscribeCategories, unsubscribeLinks;
 
-        window.showToast = (message, type = 'success', duration = 3000) => {
+        window.showToast = (message, type = 'success') => {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = `p-4 rounded-xl shadow-2xl text-white font-bold pointer-events-auto toast-enter flex items-center ${type === 'success' ? 'bg-black' : 'bg-red-600'}`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle text-green-400' : 'fa-triangle-exclamation text-white'} mr-3 text-lg"></i> <span class="text-sm">${message}</span>`;
+            toast.className = `p-4 rounded-xl shadow-2xl text-white font-bold pointer-events-auto toast-enter flex items-center ${type === 'success' ? 'bg-orange-600' : 'bg-red-600'}`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-triangle-exclamation'} mr-3 text-lg"></i> <span class="text-sm">${message}</span>`;
             container.appendChild(toast);
-            setTimeout(() => {
-                toast.classList.replace('toast-enter', 'toast-exit');
-                setTimeout(() => toast.remove(), 300);
-            }, duration);
+            setTimeout(() => { toast.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => toast.remove(), 300); }, 3000);
         };
 
         const loginBtn = document.getElementById('admin-login-btn');
         const loginLoading = document.getElementById('login-loading');
 
         loginBtn.onclick = async () => {
-            try {
-                loginBtn.classList.add('hidden');
-                loginLoading.classList.remove('hidden');
-                await signInWithPopup(authRef, googleProvider);
-            } catch (error) {
-                loginBtn.classList.remove('hidden');
-                loginLoading.classList.add('hidden');
-                showToast('Login Canceled or Failed', 'error');
-            }
+            loginBtn.classList.add('hidden'); loginLoading.classList.remove('hidden');
+            try { await signInWithPopup(authRef, googleProvider); } 
+            catch (e) { loginBtn.classList.remove('hidden'); loginLoading.classList.add('hidden'); showToast('Login Failed', 'error'); }
         };
 
         onAuthStateChanged(authRef, (user) => {
             if (user) {
-                // 🟢 বুলেটপ্রুফ চেক (বড় হাতের বা স্পেস থাকলে সেটা ফিক্স করে নিবে)
-                const safeUserEmail = user.email.toLowerCase().trim();
-                const safeAdminEmail = MASTER_ADMIN_EMAIL.toLowerCase().trim();
-
-                if (safeUserEmail === safeAdminEmail) {
+                if (user.email.toLowerCase() === MASTER_ADMIN_EMAIL.toLowerCase()) {
                     document.getElementById('admin-login-view').classList.add('hidden');
                     document.getElementById('admin-dashboard-view').classList.remove('hidden');
                     document.getElementById('admin-dashboard-view').classList.add('flex');
-                    showToast('Welcome back, Master Admin!');
                     loadAdminData();
                 } else {
-                    signOut(authRef);
-                    loginBtn.classList.remove('hidden');
-                    loginLoading.classList.add('hidden');
-                    // 🔴 এখন যদি ফেইল করে, তাহলে স্ক্রিনে দেখিয়ে দিবে সে কোন ইমেইল পেয়েছে!
-                    showToast(`Access Denied! Received: ${safeUserEmail}`, 'error', 6000);
+                    signOut(authRef); loginBtn.classList.remove('hidden'); loginLoading.classList.add('hidden');
+                    showToast('Access Denied!', 'error');
                 }
             } else {
                 document.getElementById('admin-dashboard-view').classList.add('hidden');
                 document.getElementById('admin-dashboard-view').classList.remove('flex');
                 document.getElementById('admin-login-view').classList.remove('hidden');
-                loginBtn.classList.remove('hidden');
-                loginLoading.classList.add('hidden');
-                if(unsubscribeProducts) unsubscribeProducts();
-                if(unsubscribeCategories) unsubscribeCategories();
-                if(unsubscribeLinks) unsubscribeLinks();
+                loginBtn.classList.remove('hidden'); loginLoading.classList.add('hidden');
             }
         });
 
@@ -232,8 +216,7 @@
             unsubscribeCategories = onSnapshot(collection(dbRef, 'tna_categories'), (snapshot) => {
                 allCategories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 allCategories.sort((a, b) => a.name.localeCompare(b.name));
-                renderCategoryDropdown();
-                renderCategoryList();
+                renderCategoryDropdown(); renderCategoryList();
             });
             unsubscribeLinks = onSnapshot(collection(dbRef, 'tna_links'), (snapshot) => {
                 allLinks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -242,15 +225,11 @@
             });
         }
 
-        const switchAdminTab = (activeTabBtn, activeContentId) => {
-            ['tab-add', 'tab-manage', 'tab-categories', 'tab-links'].forEach(id => {
-                document.getElementById(id).classList.replace('border-indigo-600', 'border-transparent');
-                document.getElementById(id).classList.replace('text-indigo-600', 'text-gray-500');
-            });
+        const switchAdminTab = (btn, contentId) => {
+            ['tab-add', 'tab-manage', 'tab-categories', 'tab-links'].forEach(id => { document.getElementById(id).classList.replace('border-orange-600', 'border-transparent'); document.getElementById(id).classList.replace('text-orange-600', 'text-gray-500'); });
             ['content-add', 'content-manage', 'content-categories', 'content-links'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            activeTabBtn.classList.replace('border-transparent', 'border-indigo-600');
-            activeTabBtn.classList.replace('text-gray-500', 'text-indigo-600');
-            document.getElementById(activeContentId).classList.remove('hidden');
+            btn.classList.replace('border-transparent', 'border-orange-600'); btn.classList.replace('text-gray-500', 'text-orange-600');
+            document.getElementById(contentId).classList.remove('hidden');
         };
 
         document.getElementById('tab-add').onclick = (e) => switchAdminTab(e.currentTarget, 'content-add');
@@ -258,138 +237,61 @@
         document.getElementById('tab-categories').onclick = (e) => switchAdminTab(e.currentTarget, 'content-categories');
         document.getElementById('tab-links').onclick = (e) => switchAdminTab(e.currentTarget, 'content-links');
 
-        document.getElementById('add-link-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const title = document.getElementById('link-title').value.trim();
-            const url = document.getElementById('link-url').value.trim();
-            try {
-                await addDoc(collection(dbRef, 'tna_links'), { title, url, icon: 'fa-link', createdAt: serverTimestamp() });
-                e.target.reset(); showToast('Link added');
-            } catch(error) { showToast('Permission Denied', 'error'); }
-        };
+        // Render Functions
+        function renderCategoryDropdown() { document.getElementById('p-category').innerHTML = allCategories.map(c => `<option value="${c.name}">${c.name}</option>`).join(''); }
+        function renderCategoryList() { document.getElementById('admin-category-list').innerHTML = allCategories.map(c => `<div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center"><span class="font-bold">${c.name}</span><button class="text-red-500" onclick="deleteDoc(doc(dbRef, 'tna_categories', '${c.id}'))"><i class="fa-solid fa-trash"></i></button></div>`).join(''); }
+        function renderLinksList() { document.getElementById('admin-links-list').innerHTML = allLinks.map(l => `<div class="bg-white p-4 rounded-xl border flex justify-between items-center"><div><span class="font-bold">${l.title}</span><br><span class="text-xs text-orange-500">${l.url}</span></div><button class="text-red-500" onclick="deleteDoc(doc(dbRef, 'tna_links', '${l.id}'))"><i class="fa-solid fa-trash"></i></button></div>`).join(''); }
 
-        function renderLinksList() {
-            document.getElementById('admin-links-list').innerHTML = allLinks.map(l => `
-                <div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center shadow-sm">
-                    <div><span class="font-bold">${l.title}</span><br><span class="text-xs text-indigo-500">${l.url}</span></div>
-                    <button class="text-red-500" onclick="deleteLink('${l.id}')"><i class="fa-solid fa-trash"></i></button>
-                </div>`).join('');
-        }
-        window.deleteLink = async (id) => { if (confirm('Remove this link?')) { await deleteDoc(doc(dbRef, 'tna_links', id)); } };
-
-        function renderCategoryDropdown() {
-            document.getElementById('p-category').innerHTML = allCategories.length === 0 ? `<option value="">Create a category</option>` : allCategories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
-        }
-        function renderCategoryList() {
-            document.getElementById('admin-category-list').innerHTML = allCategories.map(c => `
-                <div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center shadow-sm">
-                    <span class="font-bold">${c.name}</span><button class="text-red-500" onclick="deleteCategory('${c.id}')"><i class="fa-solid fa-trash"></i></button>
-                </div>`).join('');
-        }
-        document.getElementById('add-category-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const catName = document.getElementById('new-cat-name').value.trim();
-            if(!catName || allCategories.some(c => c.name.toLowerCase() === catName.toLowerCase())) return;
-            await addDoc(collection(dbRef, 'tna_categories'), { name: catName, createdAt: serverTimestamp() });
-            document.getElementById('new-cat-name').value = ''; showToast('Category Added');
-        };
-        window.deleteCategory = async (id) => { if (confirm('Delete category?')) { await deleteDoc(doc(dbRef, 'tna_categories', id)); } };
+        document.getElementById('add-category-form').onsubmit = async (e) => { e.preventDefault(); await addDoc(collection(dbRef, 'tna_categories'), { name: document.getElementById('new-cat-name').value.trim(), createdAt: serverTimestamp() }); document.getElementById('new-cat-name').value=''; showToast('Category Added'); };
+        document.getElementById('add-link-form').onsubmit = async (e) => { e.preventDefault(); await addDoc(collection(dbRef, 'tna_links'), { title: document.getElementById('link-title').value, url: document.getElementById('link-url').value, icon: 'fa-link', createdAt: serverTimestamp() }); e.target.reset(); showToast('Link Added'); };
 
         document.getElementById('add-more-img-btn').onclick = () => {
-            const container = document.getElementById('image-inputs-container');
-            const input = document.createElement('input');
-            input.type = 'url'; input.name = 'img-url'; input.placeholder = 'Additional Image URL';
+            const input = document.createElement('input'); input.type = 'url'; input.name = 'img-url'; input.placeholder = 'Additional Image URL';
             input.className = 'w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 transition-all text-sm mt-3';
-            container.appendChild(input);
+            document.getElementById('image-inputs-container').appendChild(input);
         };
 
         window.editProduct = (id) => {
-            const p = allProducts.find(x => x.id === id);
-            if(!p) return;
+            const p = allProducts.find(x => x.id === id); if(!p) return;
             editingProductId = p.id;
-            document.getElementById('form-heading').innerText = "Edit Content";
-            document.getElementById('submit-product-btn').innerText = "Update Content";
-            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            document.getElementById('form-heading').innerText = "Edit Product"; document.getElementById('submit-product-btn').innerText = "Update Product"; document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            document.getElementById('p-title').value = p.title; document.getElementById('p-price').value = p.price; document.getElementById('p-category').value = p.category; document.getElementById('p-checkout').value = p.checkoutLink || ''; document.getElementById('p-desc').value = p.description;
             
-            document.getElementById('p-title').value = p.title;
-            document.getElementById('p-price').value = p.price;
-            document.getElementById('p-category').value = p.category;
-            document.getElementById('p-checkout').value = p.checkoutLink || '';
-            document.getElementById('p-desc').value = p.description;
-            
-            const container = document.getElementById('image-inputs-container');
-            container.innerHTML = ''; 
-            p.imageUrls.forEach((url, index) => {
-                const input = document.createElement('input');
-                input.type = 'url'; input.name = 'img-url'; input.value = url;
-                input.className = `w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-gray-500 transition-all text-sm ${index > 0 ? 'mt-3' : ''}`;
-                container.appendChild(input);
-            });
+            const container = document.getElementById('image-inputs-container'); container.innerHTML = ''; 
+            p.imageUrls.forEach((url, i) => { const input = document.createElement('input'); input.type='url'; input.name='img-url'; input.value=url; input.className=`w-full border border-gray-300 p-3 rounded-xl focus:border-gray-500 text-sm ${i>0?'mt-3':''}`; container.appendChild(input); });
             document.getElementById('tab-add').click();
         };
 
-        window.cancelEdit = () => resetAdminEditState();
-
-        function resetAdminEditState() {
-            editingProductId = null;
-            document.getElementById('form-heading').innerText = "Publish New Product";
-            document.getElementById('submit-product-btn').innerText = "Publish Content";
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-            document.getElementById('add-product-form').reset();
-            document.getElementById('image-inputs-container').innerHTML = '<input type="url" name="img-url" required placeholder="Main Image URL" class="w-full border border-gray-300 p-3 rounded-xl text-sm">';
-        }
+        window.cancelEdit = () => {
+            editingProductId = null; document.getElementById('form-heading').innerText = "Add Trending Product"; document.getElementById('submit-product-btn').innerText = "Publish Product"; document.getElementById('cancel-edit-btn').classList.add('hidden'); document.getElementById('add-product-form').reset();
+            document.getElementById('image-inputs-container').innerHTML = '<input type="url" name="img-url" required placeholder="Main Image URL" class="w-full border p-3 rounded-xl text-sm">';
+        };
 
         document.getElementById('add-product-form').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submit-product-btn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Processing...';
+            const btn = document.getElementById('submit-product-btn'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            const data = { title: document.getElementById('p-title').value, price: parseFloat(document.getElementById('p-price').value), category: document.getElementById('p-category').value, checkoutLink: document.getElementById('p-checkout').value.trim(), imageUrls: Array.from(document.querySelectorAll('input[name="img-url"]')).map(i=>i.value).filter(v=>v), description: document.getElementById('p-desc').value };
             
-            const urls = Array.from(document.querySelectorAll('input[name="img-url"]')).map(i => i.value).filter(v => v);
-            const productData = {
-                title: document.getElementById('p-title').value,
-                price: parseFloat(document.getElementById('p-price').value),
-                category: document.getElementById('p-category').value,
-                checkoutLink: document.getElementById('p-checkout').value.trim(),
-                imageUrls: urls,
-                description: document.getElementById('p-desc').value
-            };
-
             try {
-                if (editingProductId) {
-                    await updateDoc(doc(dbRef, 'tna_products', editingProductId), productData);
-                    showToast('Updated!');
-                } else {
-                    productData.reviews = [];
-                    productData.createdAt = serverTimestamp();
-                    await addDoc(collection(dbRef, 'tna_products'), productData);
-                    showToast('Published!');
-                }
-                resetAdminEditState();
-                document.getElementById('tab-manage').click();
-            } catch (error) {
-                showToast('Error or Permission Denied', 'error');
-                btn.innerText = "Publish Content";
-            }
+                if (editingProductId) await updateDoc(doc(dbRef, 'tna_products', editingProductId), data);
+                else { data.reviews = []; data.createdAt = serverTimestamp(); await addDoc(collection(dbRef, 'tna_products'), data); }
+                window.cancelEdit(); document.getElementById('tab-manage').click(); showToast('Success!');
+            } catch (e) { showToast('Error', 'error'); btn.innerText = "Publish"; }
         };
 
         function renderAdminList() {
             document.getElementById('admin-product-list').innerHTML = allProducts.map(p => `
-                <div class="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                <div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center shadow-sm">
                     <div class="flex items-center gap-4">
                         <img src="${p.imageUrls && p.imageUrls.length > 0 ? p.imageUrls[0] : ''}" class="w-12 h-12 object-cover rounded bg-gray-100">
-                        <div>
-                            <h4 class="font-bold text-sm line-clamp-1">${p.title}</h4>
-                            <span class="text-xs text-indigo-500 font-bold"><i class="fa-solid fa-link"></i> Linked</span>
-                        </div>
+                        <div><h4 class="font-bold text-sm line-clamp-1">${p.title}</h4><span class="text-xs text-orange-600 font-bold">$${p.price}</span></div>
                     </div>
                     <div class="flex gap-2">
-                        <button class="text-indigo-600 p-2" onclick="editProduct('${p.id}')"><i class="fa-solid fa-pen"></i></button>
-                        <button class="text-red-500 p-2" onclick="deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                        <button class="text-orange-600 p-2" onclick="editProduct('${p.id}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="text-red-500 p-2" onclick="if(confirm('Delete?')) deleteDoc(doc(dbRef, 'tna_products', '${p.id}'))"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>`).join('');
         }
-
-        window.deleteProduct = async (id) => { if (confirm('Delete this?')) { await deleteDoc(doc(dbRef, 'tna_products', id)); } };
     </script>
 </body>
 </html>
