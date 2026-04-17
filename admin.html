@@ -22,29 +22,50 @@
     <div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2 w-[90%] max-w-sm pointer-events-none"></div>
 
     <div class="px-6 py-4 bg-orange-600 text-white flex justify-between items-center shadow-md z-10">
-        <h2 class="text-lg font-bold flex items-center"><i class="fa-solid fa-cart-shopping mr-3 text-orange-200"></i> Store Admin <span class="ml-2 bg-black text-xs px-2 py-0.5 rounded-full">v1</span></h2>
+        <h2 class="text-lg font-bold flex items-center"><i class="fa-solid fa-cart-shopping mr-3 text-orange-200"></i> Store Admin <span class="ml-2 bg-black text-xs px-2 py-0.5 rounded-full">v3</span></h2>
         <a href="index.html" class="text-sm font-bold text-orange-100 hover:text-white flex items-center bg-orange-700/50 px-3 py-1.5 rounded-lg transition-colors">
             <i class="fa-solid fa-store mr-2"></i> View Store
         </a>
     </div>
 
     <!-- Admin Login -->
-    <div id="admin-login-view" class="flex-1 flex flex-col items-center justify-center p-8 bg-gray-50 z-20 absolute inset-0 top-[60px]">
-        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center border border-gray-100 relative overflow-hidden">
+    <div id="admin-login-view" class="flex-1 flex flex-col items-center justify-center p-8 bg-gray-50 z-20 absolute inset-0 top-[60px] overflow-y-auto">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center border border-gray-100 relative overflow-hidden my-auto">
             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-red-500"></div>
             <i class="fa-solid fa-user-shield text-6xl text-orange-500 mb-6"></i>
             <h3 class="text-2xl font-black mb-2 text-gray-800">Store Admin Login</h3>
-            <p class="text-sm text-gray-500 mb-8">Please sign in with your authorized master account.</p>
+            <p class="text-sm text-gray-500 mb-6">Please sign in with your authorized master account.</p>
             
-            <button id="admin-login-btn" class="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 shadow-lg transition-colors flex justify-center items-center gap-3">
+            <!-- Email/Password Login Form -->
+            <form id="email-login-form" class="space-y-4 mb-6">
+                <div>
+                    <input type="email" id="login-email" placeholder="Email Address" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-orange-500 transition-all text-left">
+                </div>
+                <div>
+                    <input type="password" id="login-password" placeholder="Password" required class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:border-orange-500 transition-all text-left">
+                </div>
+                <button type="submit" id="email-login-btn" class="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 shadow-md transition-colors flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-envelope"></i> Sign in with Email
+                </button>
+            </form>
+
+            <div class="relative flex py-2 items-center">
+                <div class="flex-grow border-t border-gray-300"></div>
+                <span class="flex-shrink-0 mx-4 text-gray-400 text-sm font-medium">OR</span>
+                <div class="flex-grow border-t border-gray-300"></div>
+            </div>
+
+            <!-- Google Login Button -->
+            <button id="admin-login-btn" class="w-full mt-4 bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-800 shadow-md transition-colors flex justify-center items-center gap-3">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5">
-                <span>Sign in as Admin</span>
+                <span>Sign in with Google</span>
             </button>
+            
             <div id="login-loading" class="mt-4 text-orange-600 font-bold text-sm hidden"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Verifying Identity...</div>
         </div>
     </div>
 
-    <!-- Admin Dashboard -->
+    <!-- Admin Dashboard (Unchanged from previous V2) -->
     <div id="admin-dashboard-view" class="hidden flex-1 flex flex-col bg-white overflow-hidden relative">
         <div class="flex border-b border-gray-200 bg-white overflow-x-auto hide-scrollbar shadow-sm z-10">
             <button id="tab-add" class="px-4 py-4 font-bold border-b-[3px] border-orange-600 text-orange-600 whitespace-nowrap transition-colors"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>Add Product</button>
@@ -103,8 +124,7 @@
                 </div>
             </div>
 
-            <!-- Content Manage, Categories, Links logic is identical to previous, just color changed -->
-            <!-- MANAGE PRODUCTS -->
+            <!-- Content Manage -->
             <div id="content-manage" class="hidden absolute inset-0 overflow-y-auto p-4 md:p-8">
                 <div class="max-w-4xl mx-auto">
                     <h3 class="font-black text-xl text-gray-800 mb-4">Manage Products</h3>
@@ -144,10 +164,11 @@
         </div>
     </div>
 
-    <!-- Firebase Script (Aager Tai) -->
+    <!-- Firebase Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // 🟢 Added signInWithEmailAndPassword and createUserWithEmailAndPassword
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -179,13 +200,60 @@
             setTimeout(() => { toast.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => toast.remove(), 300); }, 3000);
         };
 
-        const loginBtn = document.getElementById('admin-login-btn');
+        const googleLoginBtn = document.getElementById('admin-login-btn');
+        const emailLoginForm = document.getElementById('email-login-form');
+        const emailLoginBtn = document.getElementById('email-login-btn');
         const loginLoading = document.getElementById('login-loading');
 
-        loginBtn.onclick = async () => {
-            loginBtn.classList.add('hidden'); loginLoading.classList.remove('hidden');
+        function toggleLoading(isLoading) {
+            if(isLoading) {
+                googleLoginBtn.classList.add('hidden');
+                emailLoginForm.classList.add('hidden');
+                loginLoading.classList.remove('hidden');
+            } else {
+                googleLoginBtn.classList.remove('hidden');
+                emailLoginForm.classList.remove('hidden');
+                loginLoading.classList.add('hidden');
+            }
+        }
+
+        // 🟢 Google Login Logic
+        googleLoginBtn.onclick = async () => {
+            toggleLoading(true);
             try { await signInWithPopup(authRef, googleProvider); } 
-            catch (e) { loginBtn.classList.remove('hidden'); loginLoading.classList.add('hidden'); showToast('Login Failed', 'error'); }
+            catch (e) { toggleLoading(false); showToast('Google Login Failed', 'error'); }
+        };
+
+        // 🟢 Email/Password Login Logic
+        emailLoginForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            toggleLoading(true);
+            try {
+                // Try to sign in
+                await signInWithEmailAndPassword(authRef, email, password);
+            } catch (error) {
+                // If account doesn't exist, try to create it (Only if it's the master email)
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                    if (email.toLowerCase() === MASTER_ADMIN_EMAIL.toLowerCase()) {
+                         try {
+                             await createUserWithEmailAndPassword(authRef, email, password);
+                             showToast('Admin Account Created!');
+                         } catch(createError) {
+                             toggleLoading(false);
+                             showToast(createError.message, 'error');
+                         }
+                    } else {
+                        toggleLoading(false);
+                        showToast('Access Denied. Invalid Admin Email.', 'error');
+                    }
+                } else {
+                    toggleLoading(false);
+                    showToast(error.message, 'error');
+                }
+            }
         };
 
         onAuthStateChanged(authRef, (user) => {
@@ -195,15 +263,17 @@
                     document.getElementById('admin-dashboard-view').classList.remove('hidden');
                     document.getElementById('admin-dashboard-view').classList.add('flex');
                     loadAdminData();
+                    showToast('Welcome back, Admin!');
                 } else {
-                    signOut(authRef); loginBtn.classList.remove('hidden'); loginLoading.classList.add('hidden');
+                    signOut(authRef); 
+                    toggleLoading(false);
                     showToast('Access Denied!', 'error');
                 }
             } else {
                 document.getElementById('admin-dashboard-view').classList.add('hidden');
                 document.getElementById('admin-dashboard-view').classList.remove('flex');
                 document.getElementById('admin-login-view').classList.remove('hidden');
-                loginBtn.classList.remove('hidden'); loginLoading.classList.add('hidden');
+                toggleLoading(false);
             }
         });
 
